@@ -35,8 +35,8 @@
             "name": "Reset",
             "description": "Reset the Periodic Min Max sensor.",
             "fields": {
-                "config_entry_id": {
-                    "name": "Periodic Min Max",
+                "entity_id": {
+                    "name": "Entity",
                     "description": "Select the Periodic Min Max sensor."
                 }
             }

@@ -20,11 +20,11 @@ from .const import (
 
 SERVICE_RESET = "reset"
 
-ATTR_CONFIG_ENTRY_ID = "config_entry_id"
+ATTR_ENTITY_ID = "entity_id"
 
 SERVICE_RESET_SCHEMA = vol.Schema(
     {
-        vol.Required(ATTR_CONFIG_ENTRY_ID): str,
+        vol.Required(ATTR_ENTITY_ID): str,
     }
 )
 
@@ -64,7 +64,7 @@ def setup_services(hass: HomeAssistant) -> None:
 
     async def handle_reset(call: ServiceCall) -> ServiceResponse:
         """Handle the service call."""
-        entry = async_get_entry(hass, call.data[ATTR_CONFIG_ENTRY_ID])
+        # entry = async_get_entry(hass, call.data[ATTR_ENTITY_ID])
 
         # TODO: reset
         return None

@@ -1,7 +1,8 @@
 reset:
   fields:
-    config_entry_id:
+    entity_id:
       required: true
       selector:
-        config_entry:
-          integration: periodic_min_max
+        entity:
+          integration: "periodic_min_max"
+          domain: "sensor"
