@@ -1,7 +1,7 @@
 {
   "services": {
     "reset": {
-      "service": "mdi:autorenew"
+      "service": "mdi:refresh"
     }
   }
 }
