@@ -1,0 +1,14 @@
+{
+  "domain": "periodic_min_max",
+  "name": "Periodic Min Max",
+  "codeowners": [
+    "@andrew-codechimp"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/andrew-codechimp/HA-PeriodicMinMax",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/andrew-codechimp/HA-PeriodicMinMax/issues",
+  "requirements": [ ],
+  "version": "1.0.0-dev"
+}

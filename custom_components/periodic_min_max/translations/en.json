@@ -1,0 +1,53 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Add Periodic Min Max",
+                "description": "Create a sensor that is the minimum or maximum of another sensor, resetttable via an action.",
+                "data": {
+                    "entity_id": "Input entity",
+                    "name": "Name",
+                    "type": "Statistic characteristic"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "entity_id": "Input entity",
+                    "type": "Statistic characteristic"
+                }
+            }
+        }
+    },
+    "selector": {
+        "type": {
+            "options": {
+                "min": "Minimum",
+                "max": "Maximum"
+            }
+        }
+    },
+    "services": {
+        "reset": {
+            "name": "Reset",
+            "description": "Reset the Periodic Min Max sensor.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Periodic Min Max",
+                    "description": "Select the Periodic Min Max sensor."
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "not_loaded": {
+            "message": "{target} is not loaded."
+        },
+        "integration_not_found": {
+            "message": "Integration \"{target}\" not found in registry."
+        }
+    }
+}

@@ -1,0 +1,39 @@
+name: "Lint"
+
+on:
+  push:
+    paths:
+      - '**.py' # Run if pushed commits include a change to a Python (.py) file.
+      - '.github/workflows/lint.yml' # Run if pushed commits include a change to a github actions workflow file.
+      - 'requirements.txt' # Run if pushed commits include a change to the Python requirements.txt file.
+      - '.pyprogject.toml' # Run if project configuration file changes.
+  pull_request:
+    paths:
+      - '**.py' # Run if pushed commits include a change to a Python (.py) file.
+      - '.github/workflows/lint.yml' # Run if pushed commits include a change to a github actions workflow file.
+      - 'requirements.txt' # Run if pushed commits include a change to the Python requirements.txt file.
+      - '.pyprogject.toml' # Run if project configuration file changes.
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        python-version: ["3.13"]
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies from requirements.txt
+      run: |
+        if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+
+    - name: Analyse the code with ruff
+      run: |
+        python3 -m ruff check .

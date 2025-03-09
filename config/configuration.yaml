@@ -1,0 +1,13 @@
+# https://www.home-assistant.io/integrations/default_config/
+default_config:
+
+# https://www.home-assistant.io/integrations/logger/
+logger:
+  default: warning
+  logs:
+    custom_components.periodic_min_max: debug
+
+debugpy:
+  start: true
+  wait: false
+  port: 5678
