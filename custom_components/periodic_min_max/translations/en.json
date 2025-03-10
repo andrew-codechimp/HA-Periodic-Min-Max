@@ -33,7 +33,7 @@
     "services": {
         "reset": {
             "name": "Reset",
-            "description": "Reset the Periodic Min Max sensor.",
+            "description": "Reset a Periodic Min Max sensor.",
             "fields": {
                 "entity_id": {
                     "name": "Entity",
