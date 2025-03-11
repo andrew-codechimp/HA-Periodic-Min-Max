@@ -67,6 +67,7 @@ async def async_setup_entry(
         ]
     )
 
+
 async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
@@ -81,30 +82,7 @@ async def async_setup_platform(
 
     await async_setup_reload_service(hass, DOMAIN, PLATFORMS)
 
-    async_add_entities(
-        [PeriodicMinMaxSensor(entity_id, name, sensor_type, unique_id)]
-    )
-
-def calc_min(sensor_value: Any) -> float | None:
-    """Calculate min value, honoring unknown states."""
-    val: float | None = None
-    if sensor_value not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
-        val is None or val > sensor_value
-    ):
-        val = sensor_value
-    return val
-
-
-def calc_max(
-    sensor_value: Any,
-) -> float | None:
-    """Calculate max value, honoring unknown states."""
-    val: float | None = None
-    if sensor_value not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
-        val is None or val < sensor_value
-    ):
-        val = sensor_value
-    return val
+    async_add_entities([PeriodicMinMaxSensor(entity_id, name, sensor_type, unique_id)])
 
 
 class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
@@ -146,12 +124,11 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         )
 
         # Replay current state of source entities
-        for entity_id in self._entity_id:
-            state = self.hass.states.get(entity_id)
-            state_event: Event[EventStateChangedData] = Event(
-                "", {"entity_id": entity_id, "new_state": state, "old_state": None}
-            )
-            self._async_min_max_sensor_state_listener(state_event, update_state=False)
+        state = self.hass.states.get(self._entity_id)
+        state_event: Event[EventStateChangedData] = Event(
+            "", {"entity_id": self._entity_id, "new_state": state, "old_state": None}
+        )
+        self._async_min_max_sensor_state_listener(state_event, update_state=False)
 
         self._calc_values()
 
@@ -160,6 +137,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         """Return the state of the sensor."""
         if self._unit_of_measurement_mismatch:
             return None
+        print(self.min_value)
         value: StateType | datetime = getattr(self, self._sensor_attr)
         return value
 
@@ -222,5 +200,15 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     @callback
     def _calc_values(self) -> None:
         """Calculate the values."""
-        self.min_value = calc_min(self._state)
-        self.max_value = calc_max(self._state)
+
+        """Calculate min value, honoring unknown states."""
+        if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
+            self.min_value is None or self.min_value > self._state
+        ):
+            self.min_value = self._state
+
+        """Calculate max value, honoring unknown states."""
+        if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
+            self.max_value is None or self.max_value > self._state
+        ):
+            self.max_value = self._state
