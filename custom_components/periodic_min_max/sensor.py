@@ -105,14 +105,14 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     def __init__(
         self,
-        entity_id: str,
+        source_entity_id: str,
         name: str | None,
         sensor_type: str,
         unique_id: str | None,
     ) -> None:
         """Initialize the min/max sensor."""
         self._attr_unique_id = unique_id
-        self._entity_id = entity_id
+        self._source_entity_id = source_entity_id
         self._sensor_type = sensor_type
 
         if name:
@@ -120,6 +120,8 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         else:
             self._attr_name = f"{sensor_type} sensor".capitalize()
         self._sensor_attr = SENSOR_TYPE_TO_ATTR[self._sensor_type]
+
+
         self._unit_of_measurement = None
         self._unit_of_measurement_mismatch = False
         self.min_value: float | None = None
@@ -129,21 +131,28 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
 
+        # Mirror the source entity attributes
+        registry = er.async_get(self.hass)
+        entry = registry.async_get(self._source_entity_id)
+        self._unit_of_measurement = entry.unit_of_measurement
+        self._attr_device_class = entry.device_class if entry.device_class else entry.original_device_class
+        self._attr_icon = entry.icon if entry.icon else entry.original_icon
+
         self.async_on_remove(
             async_track_state_change_event(
-                self.hass, self._entity_id, self._async_min_max_sensor_state_listener
+                self.hass, self._source_entity_id, self._async_min_max_sensor_state_listener
             )
         )
 
         state = await self.async_get_last_state()
-        if state is not None:
+        if state is not None and state.state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
             self._state = float(state.state)
             self._calc_values()
 
         # Replay current state of source entitiy
-        state = self.hass.states.get(self._entity_id)
+        state = self.hass.states.get(self._source_entity_id)
         state_event: Event[EventStateChangedData] = Event(
-            "", {"entity_id": self._entity_id, "new_state": state, "old_state": None}
+            "", {"entity_id": self._source_entity_id, "new_state": state, "old_state": None}
         )
         self._async_min_max_sensor_state_listener(state_event, update_state=False)
 
