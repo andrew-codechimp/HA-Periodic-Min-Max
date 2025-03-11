@@ -64,9 +64,7 @@ Next translate a string
 - Fill in or modify the translation and click Save.
 - Repeat for other translations.
 
-!!! info
-
-    Periodic Min Max will automatically pull in latest changes to translations every day and create a Pull Request. After that is reviewed by a maintainer it will be included in the next release of Periodic Min Max.
+Periodic Min Max will automatically pull in latest changes to translations every day and create a Pull Request. After that is reviewed by a maintainer it will be included in the next release of Periodic Min Max.
 
 **Adding a new language**
 
