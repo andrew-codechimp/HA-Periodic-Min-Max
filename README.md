@@ -9,6 +9,7 @@
 Periodic Min Max Helpers for Home Assistant
 
 # WORK IN PROGRESS
+Do not use until there is an official release
 
 _Please :star: this repo if you find it useful_  
 _If you want to show your support please_

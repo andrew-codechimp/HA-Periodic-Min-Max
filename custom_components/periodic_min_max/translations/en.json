@@ -41,13 +41,5 @@
                 }
             }
         }
-    },
-    "exceptions": {
-        "not_loaded": {
-            "message": "{target} is not loaded."
-        },
-        "integration_not_found": {
-            "message": "Integration \"{target}\" not found in registry."
-        }
     }
 }
