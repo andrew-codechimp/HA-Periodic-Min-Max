@@ -19,6 +19,8 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform, service
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_platform import (
     AddConfigEntryEntitiesCallback,
@@ -40,6 +42,8 @@ SENSOR_TYPES = {
     ATTR_MIN_VALUE: "min",
     ATTR_MAX_VALUE: "max",
 }
+
+SERVICE_RESET = "reset"
 
 SENSOR_TYPE_TO_ATTR = {v: k for k, v in SENSOR_TYPES.items()}
 
@@ -65,6 +69,14 @@ async def async_setup_entry(
                 config_entry.entry_id,
             )
         ]
+    )
+
+    platform = entity_platform.async_get_current_platform()
+
+    platform.async_register_entity_service(
+        SERVICE_RESET,
+        None,
+        "handle_reset",
     )
 
 
@@ -114,6 +126,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         self.min_value: float | None = None
         self.max_value: float | None = None
         self._state: Any = None
+        self.source_entity_state: Any | None = None
 
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
@@ -211,3 +224,10 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             self.max_value is None or self.max_value > self._state
         ):
             self.max_value = self._state
+
+    async def handle_reset(self) -> None:
+        """Set the min & max to current state."""
+        self.min_value = self._state
+        self.max_value = self._state
+
+        self.async_write_ha_state()

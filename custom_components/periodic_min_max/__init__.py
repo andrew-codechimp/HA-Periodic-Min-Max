@@ -6,15 +6,11 @@ https://github.com/andrew-codechimp/HA_Periodic_Min_Max
 
 from __future__ import annotations
 
-from asyncio import sleep
-
 from awesomeversion.awesomeversion import AwesomeVersion
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_ENTITIES, Platform
 from homeassistant.const import __version__ as HA_VERSION  # noqa: N812
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
@@ -23,8 +19,6 @@ from .const import (
     MIN_HA_VERSION,
     PLATFORMS,
 )
-from .sensor import PeriodicMinMaxSensor
-from .services import setup_services
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -45,12 +39,6 @@ async def async_setup(
         )
         LOGGER.critical(msg)
         return False
-
-    component = EntityComponent[PeriodicMinMaxSensor](LOGGER, DOMAIN, hass)
-
-    component.async_register_entity_service(SERVICE_RESET, None, "async_reset")
-
-    setup_services(hass)
 
     return True
 
