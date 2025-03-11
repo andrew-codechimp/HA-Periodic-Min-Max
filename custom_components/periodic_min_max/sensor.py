@@ -126,7 +126,6 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         self.min_value: float | None = None
         self.max_value: float | None = None
         self._state: Any = None
-        self.source_entity_state: Any | None = None
 
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
