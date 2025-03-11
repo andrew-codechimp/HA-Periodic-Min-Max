@@ -137,7 +137,6 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         """Return the state of the sensor."""
         if self._unit_of_measurement_mismatch:
             return None
-        print(self.min_value)
         value: StateType | datetime = getattr(self, self._sensor_attr)
         return value
 
