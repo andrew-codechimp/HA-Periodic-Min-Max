@@ -6,10 +6,12 @@
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
 
-Periodic Min Max Helpers for Home Assistant
-
 # WORK IN PROGRESS
-Do not use until there is an official release
+Do not use until there is a 1.x release, things are subject to breaking changes.  
+
+Periodic Min Max Helpers for Home Assistant  
+
+The helpers record the minimum or maximum of a sensor, until manually reset via the reset action.  
 
 _Please :star: this repo if you find it useful_  
 _If you want to show your support please_
