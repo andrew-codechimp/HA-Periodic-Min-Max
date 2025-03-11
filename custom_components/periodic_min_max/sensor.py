@@ -129,13 +129,19 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
+
         self.async_on_remove(
             async_track_state_change_event(
                 self.hass, self._entity_id, self._async_min_max_sensor_state_listener
             )
         )
 
-        # Replay current state of source entities
+        state = await self.async_get_last_state()
+        if state is not None:
+            self._state = float(state.state)
+            self._calc_values()
+
+        # Replay current state of source entitiy
         state = self.hass.states.get(self._entity_id)
         state_event: Event[EventStateChangedData] = Event(
             "", {"entity_id": self._entity_id, "new_state": state, "old_state": None}
