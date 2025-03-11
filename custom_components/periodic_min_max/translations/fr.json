@@ -1,0 +1,45 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Add Periodic Min Max",
+                "description": "Create a sensor that is the minimum or maximum of another sensor, resetttable via an action.",
+                "data": {
+                    "entity_id": "Input entity",
+                    "name": "Nom",
+                    "type": "Indicateur statistique"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "entity_id": "Input entity",
+                    "type": "Indicateur statistique"
+                }
+            }
+        }
+    },
+    "selector": {
+        "type": {
+            "options": {
+                "min": "Minimum",
+                "max": "Maximum"
+            }
+        }
+    },
+    "services": {
+        "reset": {
+            "name": "Réinitialiser",
+            "description": "Reset a Periodic Min Max sensor.",
+            "fields": {
+                "entity_id": {
+                    "name": "Entité",
+                    "description": "Select the Periodic Min Max sensor."
+                }
+            }
+        }
+    }
+}
