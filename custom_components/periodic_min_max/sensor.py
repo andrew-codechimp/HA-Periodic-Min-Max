@@ -171,7 +171,6 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     ) -> None:
         """Handle the sensor state changes."""
         new_state = event.data["new_state"]
-        entity = event.data["entity_id"]
 
         if (
             new_state is None
