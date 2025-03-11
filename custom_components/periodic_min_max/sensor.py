@@ -226,7 +226,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
         """Calculate max value, honoring unknown states."""
         if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
-            self.max_value is None or self.max_value > self._state
+            self.max_value is None or self.max_value < self._state
         ):
             self.max_value = self._state
 
