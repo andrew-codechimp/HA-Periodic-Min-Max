@@ -19,8 +19,7 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import entity_platform, service
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_platform import (
     AddConfigEntryEntitiesCallback,
