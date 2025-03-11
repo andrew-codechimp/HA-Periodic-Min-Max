@@ -41,6 +41,38 @@ Installation via HACS is recommended, but a manual setup is supported.
 
 </details>
 
+
+### Translations
+<details>
+<summary>You can help by adding missing translations when you are a native speaker. Or add a complete new language when there is no language file available.</summary>
+
+Periodic Min Max uses Crowdin to make contributing easy.
+
+**Changing or adding to existing language**
+
+First register and join the translation project
+
+- If you don’t have a Crowdin account yet, create one at [https://crowdin.com](https://crowdin.com)
+- Go to the [Periodic Min Max Crowdin project page](https://crowdin.com/project/periodic-min-max)
+- Click Join.
+
+Next translate a string
+
+- Select the language you want to contribute to from the dashboard.
+- Click Translate All.
+- Find the string you want to edit, missing translation are marked red.
+- Fill in or modify the translation and click Save.
+- Repeat for other translations.
+
+!!! info
+
+    Periodic Min Max will automatically pull in latest changes to translations every day and create a Pull Request. After that is reviewed by a maintainer it will be included in the next release of Periodic Min Max.
+
+**Adding a new language**
+
+Create an [Issue](https://github.com/andrew-codechimp/HA-Periodic-Min-Max/issues/) requesting a new language. We will do the necessary work to add the new translation to the integration and Crowdin site, when it's ready for you to contribute we'll comment on the issue you raised.
+</details>
+
 ---
 
 [commits-shield]: https://img.shields.io/github/commit-activity/y/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
