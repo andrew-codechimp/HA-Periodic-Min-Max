@@ -18,6 +18,10 @@ _If you want to show your support please_
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/codechimp)
 
+![Helper Creation](https://raw.githubusercontent.com/andrew-codechimp/ha-periodic-min-max/main/images/helper-create.png "Helper Creation")
+
+![Reset Action](https://raw.githubusercontent.com/andrew-codechimp/ha-periodic-min-max/main/images/action-reset.png "Reset Action")
+
 ## Installation
 
 ### HACS
