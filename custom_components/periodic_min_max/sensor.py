@@ -150,6 +150,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         entry = registry.async_get(self._source_entity_id)
 
         self._unit_of_measurement = entry.unit_of_measurement
+        self._attr_device_class = entry.device_class
         self._attr_icon = entry.icon if entry.icon else entry.original_icon
 
         state = await self.async_get_last_state()
