@@ -11,7 +11,7 @@ Until there is a 1.x release things might break, use at your own risk.
 
 Periodic Min Max Helpers for Home Assistant  
 
-The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is restored after HA restarts.  
+The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is maintained through HA restarts.  
 
 _Please :star: this repo if you find it useful_  
 _If you want to show your support please_
