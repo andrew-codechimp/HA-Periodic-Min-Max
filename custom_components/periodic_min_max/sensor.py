@@ -151,7 +151,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
         self._unit_of_measurement = entry.unit_of_measurement
         self._attr_device_class = entry.device_class
-        self._attr_icon = entry.icon if entry.icon else entry.original_icon
+        self._attr_icon = entry.icon if entry.icon else entry.original_icon if entry.original_icon else ICON
 
         state = await self.async_get_last_state()
         if state is not None and state.state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
