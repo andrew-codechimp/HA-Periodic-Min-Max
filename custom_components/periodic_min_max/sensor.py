@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Any
 
 from homeassistant.components.sensor import (
+    SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
@@ -129,7 +130,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             source_entity_id,
         )
 
-        self._unit_of_measurement = None
+        self._unit_of_measurement: str | None = None
         self._unit_of_measurement_mismatch = False
         self.min_value: float | None = None
         self.max_value: float | None = None
@@ -149,23 +150,30 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         registry = er.async_get(self.hass)
         entry = registry.async_get(self._source_entity_id)
 
-        self._unit_of_measurement = entry.unit_of_measurement
-        self._attr_device_class = entry.device_class
-        self._attr_icon = entry.icon if entry.icon else entry.original_icon if entry.original_icon else ICON
+        if not entry:
+            LOGGER.warning(
+                "Unable to find entity %s",
+                self._source_entity_id,
+            )
 
-        state = await self.async_get_last_state()
-        if state is not None and state.state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
-            self._state = float(state.state)
+        if entry:
+            self._unit_of_measurement = entry.unit_of_measurement
+            self._attr_device_class = SensorDeviceClass(entry.device_class) if entry.device_class else None
+            self._attr_icon = entry.icon if entry.icon else entry.original_icon if entry.original_icon else ICON
+
+            state = await self.async_get_last_state()
+            if state is not None and state.state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
+                self._state = float(state.state)
+                self._calc_values()
+
+            # Replay current state of source entitiy
+            state = self.hass.states.get(self._source_entity_id)
+            state_event: Event[EventStateChangedData] = Event(
+                "", {"entity_id": self._source_entity_id, "new_state": state, "old_state": None}
+            )
+            self._async_min_max_sensor_state_listener(state_event, update_state=False)
+
             self._calc_values()
-
-        # Replay current state of source entitiy
-        state = self.hass.states.get(self._source_entity_id)
-        state_event: Event[EventStateChangedData] = Event(
-            "", {"entity_id": self._source_entity_id, "new_state": state, "old_state": None}
-        )
-        self._async_min_max_sensor_state_listener(state_event, update_state=False)
-
-        self._calc_values()
 
     @property
     def native_value(self) -> StateType | datetime:
