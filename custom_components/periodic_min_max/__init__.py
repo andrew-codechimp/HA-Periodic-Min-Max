@@ -22,8 +22,6 @@ from .const import (
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
-SERVICE_RESET = "reset"
-
 
 async def async_setup(
     hass: HomeAssistant,  # pylint: disable=unused-argument
