@@ -21,6 +21,7 @@ from homeassistant.const import (
 from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.device import async_device_info_to_link_from_entity
 from homeassistant.helpers.entity_platform import (
     AddConfigEntryEntitiesCallback,
     AddEntitiesCallback,
@@ -62,6 +63,7 @@ async def async_setup_entry(
     async_add_entities(
         [
             PeriodicMinMaxSensor(
+                hass,
                 entity_id,
                 config_entry.title,
                 sensor_type,
@@ -93,7 +95,7 @@ async def async_setup_platform(
 
     await async_setup_reload_service(hass, DOMAIN, PLATFORMS)
 
-    async_add_entities([PeriodicMinMaxSensor(entity_id, name, sensor_type, unique_id)])
+    async_add_entities([PeriodicMinMaxSensor(hass, entity_id, name, sensor_type, unique_id)])
 
 
 class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
@@ -105,6 +107,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     def __init__(
         self,
+        hass: HomeAssistant,
         source_entity_id: str,
         name: str | None,
         sensor_type: str,
@@ -121,6 +124,10 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             self._attr_name = f"{sensor_type} sensor".capitalize()
         self._sensor_attr = SENSOR_TYPE_TO_ATTR[self._sensor_type]
 
+        self._attr_device_info = async_device_info_to_link_from_entity(
+            hass,
+            source_entity_id,
+        )
 
         self._unit_of_measurement = None
         self._unit_of_measurement_mismatch = False
@@ -128,20 +135,22 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         self.max_value: float | None = None
         self._state: Any = None
 
+
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
-
-        # Mirror the source entity attributes
-        registry = er.async_get(self.hass)
-        entry = registry.async_get(self._source_entity_id)
-        self._unit_of_measurement = entry.unit_of_measurement
-        self._attr_icon = entry.icon if entry.icon else entry.original_icon
 
         self.async_on_remove(
             async_track_state_change_event(
                 self.hass, self._source_entity_id, self._async_min_max_sensor_state_listener
             )
         )
+
+        # Mirror the source entity attributes
+        registry = er.async_get(self.hass)
+        entry = registry.async_get(self._source_entity_id)
+
+        self._unit_of_measurement = entry.unit_of_measurement
+        self._attr_icon = entry.icon if entry.icon else entry.original_icon
 
         state = await self.async_get_last_state()
         if state is not None and state.state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
