@@ -7,7 +7,7 @@
 [![hacs][hacsbadge]][hacs]
 
 # WORK IN PROGRESS
-Do not use until there is a 1.x release, things are subject to breaking changes.  
+Until there is a 1.x release things might break, use at your own risk.  
 
 Periodic Min Max Helpers for Home Assistant  
 
