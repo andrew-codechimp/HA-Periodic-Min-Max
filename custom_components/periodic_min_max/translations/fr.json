@@ -33,7 +33,7 @@
     "services": {
         "reset": {
             "name": "Réinitialiser",
-            "description": "Reset a Periodic Min Max sensor.",
+            "description": "Reset a Periodic Min Max sensor to the current input entity value.",
             "fields": {
                 "entity_id": {
                     "name": "Entité",
