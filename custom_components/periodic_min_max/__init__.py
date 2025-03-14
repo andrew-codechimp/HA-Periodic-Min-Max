@@ -1,7 +1,7 @@
 """Custom integration to provide periodic_min_max helpers for Home Assistant.
 
 For more details about this integration, please refer to
-https://github.com/andrew-codechimp/HA_Periodic_Min_Max
+https://github.com/andrew-codechimp/HA-Periodic-Min-Max
 """
 
 from __future__ import annotations
