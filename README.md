@@ -7,11 +7,12 @@
 [![hacs][hacsbadge]][hacs]
 
 # WORK IN PROGRESS
-Until there is a 1.x release things might break, use at your own risk.  
 
-Periodic Min Max Helpers for Home Assistant  
+Until there is a 1.x release things might break, use at your own risk.
 
-The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is maintained through HA restarts.  
+Periodic Min Max Helpers for Home Assistant
+
+The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is maintained through HA restarts.
 
 _Please :star: this repo if you find it useful_  
 _If you want to show your support please_
@@ -30,7 +31,7 @@ _If you want to show your support please_
 
 Restart Home Assistant
 
-In the HA UI go to "Configuration" -> "Devices & services" -> "Helpers" click "+" and search for "Periodic Min/Max"
+In the HA UI go to "Configuration" -> "Devices & services" -> "Helpers" click "+" and select "Periodic Min/Max"
 
 ### Manual Installation
 
@@ -41,12 +42,12 @@ Installation via HACS is recommended, but a manual setup is supported.
 
 1. Manually copy custom_components/periodic_min_max folder from latest release to custom_components folder in your config folder.
 1. Restart Home Assistant.
-1. In the HA UI go to "Configuration" -> "Devices & services" -> "Helpers" click "+" and search for "Periodic Min/Max"
+1. In the HA UI go to "Configuration" -> "Devices & services" -> "Helpers" click "+" and select "Periodic Min/Max"
 
 </details>
 
-
 ### Translations
+
 <details>
 <summary>You can help by adding missing translations when you are a native speaker. Or add a complete new language when there is no language file available.</summary>
 
@@ -73,6 +74,7 @@ Periodic Min Max will automatically pull in latest changes to translations every
 **Adding a new language**
 
 Create an [Issue](https://github.com/andrew-codechimp/HA-Periodic-Min-Max/issues/) requesting a new language. We will do the necessary work to add the new translation to the integration and Crowdin site, when it's ready for you to contribute we'll comment on the issue you raised.
+
 </details>
 
 ---
