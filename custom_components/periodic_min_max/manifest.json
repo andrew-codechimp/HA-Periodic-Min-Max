@@ -5,10 +5,10 @@
     "@andrew-codechimp"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/andrew-codechimp/HA-PeriodicMinMax",
+  "documentation": "https://github.com/andrew-codechimp/HA-Periodic-Min-Max",
   "integration_type": "helper",
   "iot_class": "calculated",
-  "issue_tracker": "https://github.com/andrew-codechimp/HA-PeriodicMinMax/issues",
+  "issue_tracker": "https://github.com/andrew-codechimp/HA-Periodic-Min-Max/issues",
   "requirements": [ ],
   "version": "1.0.0-dev"
 }
