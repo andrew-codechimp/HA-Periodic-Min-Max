@@ -6,7 +6,7 @@
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
 
-Periodic Min Max Helpers for Home Assistant
+Periodic Min/Max Helpers for Home Assistant
 
 The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is maintained through HA restarts.
 
@@ -52,14 +52,14 @@ Installation via HACS is recommended, but a manual setup is supported.
 <details>
 <summary>You can help by adding missing translations when you are a native speaker. Or add a complete new language when there is no language file available.</summary>
 
-Periodic Min Max uses Crowdin to make contributing easy.
+Periodic Min/Max uses Crowdin to make contributing easy.
 
 **Changing or adding to existing language**
 
 First register and join the translation project
 
 - If you don’t have a Crowdin account yet, create one at [https://crowdin.com](https://crowdin.com)
-- Go to the [Periodic Min Max Crowdin project page](https://crowdin.com/project/periodic-min-max)
+- Go to the [Periodic Min/Max Crowdin project page](https://crowdin.com/project/periodic-min-max)
 - Click Join.
 
 Next translate a string
@@ -70,7 +70,7 @@ Next translate a string
 - Fill in or modify the translation and click Save.
 - Repeat for other translations.
 
-Periodic Min Max will automatically pull in latest changes to translations every day and create a Pull Request. After that is reviewed by a maintainer it will be included in the next release of Periodic Min Max.
+Periodic Min/Max will automatically pull in latest changes to translations every day and create a Pull Request. After that is reviewed by a maintainer it will be included in the next release of Periodic Min/Max.
 
 **Adding a new language**
 

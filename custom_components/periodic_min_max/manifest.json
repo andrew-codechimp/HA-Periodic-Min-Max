@@ -1,6 +1,6 @@
 {
   "domain": "periodic_min_max",
-  "name": "Periodic Min Max",
+  "name": "Periodic Min/Max",
   "codeowners": [
     "@andrew-codechimp"
   ],

@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "title": "Add Periodic Min Max",
+                "title": "Add Periodic Min/Max",
                 "description": "Create a sensor that is the minimum or maximum of another sensor, resetttable via an action.",
                 "data": {
                     "entity_id": "Input entity",
@@ -33,11 +33,11 @@
     "services": {
         "reset": {
             "name": "Zurücksetzen",
-            "description": "Reset a Periodic Min Max sensor to the current input entity value.",
+            "description": "Reset a Periodic Min/Max sensor to the current input entity value.",
             "fields": {
                 "entity_id": {
                     "name": "Entität",
-                    "description": "Select the Periodic Min Max sensor."
+                    "description": "Select the Periodic Min/Max sensor."
                 }
             }
         }
