@@ -10,6 +10,11 @@ Periodic Min Max Helpers for Home Assistant
 
 The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is maintained through HA restarts.
 
+## Example use cases
+
+- Record the maximum temperature today, resetting at midnight via an automation.
+- Record the peak solar energy produced ever, reset when you upgrade your solar installation.
+
 _Please :star: this repo if you find it useful_  
 _If you want to show your support please_
 
