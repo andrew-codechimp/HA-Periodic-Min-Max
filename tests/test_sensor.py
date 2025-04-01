@@ -1,6 +1,5 @@
 """The test for the periodic_min_max sensor platform."""
 
-import statistics
 from unittest.mock import patch
 
 import pytest
@@ -32,6 +31,11 @@ async def test_min_sensor(
     hass: HomeAssistant, entity_registry: er.EntityRegistry
 ) -> None:
     """Test the min sensor."""
+    sensor_entity_entry = entity_registry.async_get_or_create(
+        "sensor", "test_1", "unique", suggested_object_id="test_1"
+    )
+    assert sensor_entity_entry.entity_id == "sensor.test_1"
+
     config = {
         "sensor": {
             "platform": "periodic_min_max",
@@ -45,10 +49,8 @@ async def test_min_sensor(
     assert await async_setup_component(hass, "sensor", config)
     await hass.async_block_till_done()
 
-    entity_id = config["sensor"]["entity_id"]
-
     for value in VALUES_NUMERIC:
-        hass.states.async_set(entity_id, value)
+        hass.states.async_set(sensor_entity_entry.entity_id, value)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.test_min")
@@ -60,27 +62,36 @@ async def test_min_sensor(
     assert entity.unique_id == "very_unique_id"
 
 
-async def test_max_sensor(hass: HomeAssistant) -> None:
+async def test_max_sensor(
+    hass: HomeAssistant, entity_registry: er.EntityRegistry
+) -> None:
     """Test the max sensor."""
+    sensor_entity_entry = entity_registry.async_get_or_create(
+        "sensor", "test_1", "unique", suggested_object_id="test_1"
+    )
+    assert sensor_entity_entry.entity_id == "sensor.test_1"
+
     config = {
         "sensor": {
             "platform": "periodic_min_max",
             "name": "test_max",
             "type": "max",
             "entity_id": "sensor.test_1",
+            "unique_id": "very_unique_id",
         }
     }
 
     assert await async_setup_component(hass, "sensor", config)
     await hass.async_block_till_done()
 
-    entity_id = config["sensor"]["entity_id"]
-
     for value in VALUES_NUMERIC:
-        hass.states.async_set(entity_id, value)
+        hass.states.async_set(sensor_entity_entry.entity_id, value)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.test_max")
 
     assert str(float(MAX_VALUE)) == state.state
     assert state.attributes.get(ATTR_STATE_CLASS) == SensorStateClass.MEASUREMENT
+
+    entity = entity_registry.async_get("sensor.test_max")
+    assert entity.unique_id == "very_unique_id"

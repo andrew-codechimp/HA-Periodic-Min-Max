@@ -19,7 +19,6 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.periodic_min_max.const import DOMAIN
 
-from .common import MockNumberEntity
 from .test_sensor import VALUES_NUMERIC
 
 pytest_plugins = "pytest_homeassistant_custom_component"
@@ -80,14 +79,3 @@ async def load_integration(
     await hass.async_block_till_done()
 
     return config_entry
-
-@pytest.fixture
-def mock_number_entities() -> list[MockNumberEntity]:
-    """Return a list of mock number entities."""
-    return [
-        MockNumberEntity(
-            name="test_1",
-            unique_id="unique_number",
-            native_value=50.0,
-        ),
-    ]

@@ -5,23 +5,26 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.setup import async_setup_component
-from pytest_homeassistant_custom_component.common import (
-    MockConfigEntry,
-    setup_test_component_platform,
-)
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.periodic_min_max.const import DOMAIN
 from custom_components.periodic_min_max.sensor import SERVICE_RESET
 
-from .common import MockNumberEntity
 from .test_sensor import LAST_VALUE, VALUES_NUMERIC
 
 
 async def test_service_reset(
     hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
 ) -> None:
     """Test the post service."""
+
+    sensor_entity_entry = entity_registry.async_get_or_create(
+        "sensor", "test_1", "unique", suggested_object_id="test_1"
+    )
+    assert sensor_entity_entry.entity_id == "sensor.test_1"
 
     hass.states.async_set("sensor.test_1", str(float(LAST_VALUE)))
 
