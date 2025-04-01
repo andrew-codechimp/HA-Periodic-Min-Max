@@ -20,47 +20,40 @@ from .test_sensor import LAST_VALUE, VALUES_NUMERIC
 
 async def test_service_reset(
     hass: HomeAssistant,
-    mock_number_entities: list[MockNumberEntity],
 ) -> None:
     """Test the post service."""
 
-    source_config = {
-        "sensor": {
-            "platform": "number",
-            "name": "test_1",
-            "unique_id": "very_unique_source_id",
-        }
-    }
-
-    config = {
-        "sensor": {
-            "platform": "periodic_min_max",
-            "name": "test_min_service",
-            "type": "min",
-            "entity_id": "sensor.test_1",
-            "unique_id": "very_unique_id",
-        }
-    }
-
-    setup_test_component_platform(hass, "number", mock_number_entities)
-    assert await async_setup_component(hass, "sensor", source_config)
-
     hass.states.async_set("sensor.test_1", str(float(LAST_VALUE)))
 
-    assert await async_setup_component(hass, "sensor", config)
+    periodic_min_max_entity_id = "sensor.my_periodic_min_max"
+
+    # Setup the config entry
+    config_entry = MockConfigEntry(
+        data={},
+        domain=DOMAIN,
+        options={
+            "name": "My periodic min max",
+            "entity_id": "sensor.test_1",
+            "type": "max",
+        },
+        title="My periodic_min_max",
+    )
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
 
-    entity_id = config["sensor"]["entity_id"]
+    assert await async_setup_component(hass, DOMAIN, config_entry)
+    await hass.async_block_till_done()
 
 
     await hass.services.async_call(
         DOMAIN,
         SERVICE_RESET,
-        target={"entity_id": "sensor.test_min_service"},
+        target={"entity_id": periodic_min_max_entity_id},
         blocking=True,
         return_response=False,
     )
 
-    state = hass.states.get("sensor.test_min")
+    state = hass.states.get(periodic_min_max_entity_id)
 
     assert str(float(LAST_VALUE)) == state.state
