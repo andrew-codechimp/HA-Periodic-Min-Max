@@ -1,0 +1,5 @@
+sensor:
+  - platform: periodic_min_max
+    entity_id: sensor.test_1
+    name: test
+    type: max

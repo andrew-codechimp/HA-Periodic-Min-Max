@@ -129,3 +129,7 @@ warn_unused_ignores = true
 
 [tool.ruff.lint.mccabe]
 max-complexity = 25
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
