@@ -95,3 +95,36 @@ async def test_max_sensor(
 
     entity = entity_registry.async_get("sensor.test_max")
     assert entity.unique_id == "very_unique_id"
+
+async def test_value_error(
+    hass: HomeAssistant, entity_registry: er.EntityRegistry
+) -> None:
+    """Test value error."""
+    sensor_entity_entry = entity_registry.async_get_or_create(
+        "sensor", "test_1", "unique", suggested_object_id="test_1"
+    )
+    assert sensor_entity_entry.entity_id == "sensor.test_1"
+
+    config = {
+        "sensor": {
+            "platform": "periodic_min_max",
+            "name": "test_max",
+            "type": "max",
+            "entity_id": "sensor.test_1",
+            "unique_id": "very_unique_id",
+        }
+    }
+
+    assert await async_setup_component(hass, "sensor", config)
+    await hass.async_block_till_done()
+
+    for value in VALUES_ERROR:
+        hass.states.async_set(sensor_entity_entry.entity_id, value)
+        await hass.async_block_till_done()
+
+    state = hass.states.get("sensor.test_max")
+
+    assert state.attributes.get(ATTR_STATE_CLASS) == SensorStateClass.MEASUREMENT
+
+    entity = entity_registry.async_get("sensor.test_max")
+    assert entity.unique_id == "very_unique_id"
