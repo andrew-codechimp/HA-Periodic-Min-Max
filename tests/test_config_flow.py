@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
-import pytest
 from homeassistant import config_entries
-from homeassistant.components.recorder import Recorder
 from homeassistant.const import CONF_ENTITY_ID, CONF_NAME, CONF_TYPE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-from syrupy import SnapshotAssertion
 
 from custom_components.periodic_min_max.const import DOMAIN
 

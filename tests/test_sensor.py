@@ -1,23 +1,9 @@
 """The test for the periodic_min_max sensor platform."""
 
-from unittest.mock import patch
-
-import pytest
-from homeassistant import config as hass_config
 from homeassistant.components.sensor import ATTR_STATE_CLASS, SensorStateClass
-from homeassistant.const import (
-    ATTR_UNIT_OF_MEASUREMENT,
-    PERCENTAGE,
-    SERVICE_RELOAD,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
-    UnitOfTemperature,
-)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.setup import async_setup_component
-
-from custom_components.periodic_min_max.const import DOMAIN
 
 VALUES_NUMERIC = [17, 20, 15.2, 5, 3.8, 9.2, 6.7, 14, 6]
 VALUES_ERROR = [17, "string", 15.3]
