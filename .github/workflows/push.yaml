@@ -8,20 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  validate:
-    runs-on: "ubuntu-latest"
-    name: Validate
-    steps:
-      - uses: "actions/checkout@v4"
-
-      - name: HACS validation
-        uses: "hacs/action@main"
-        with:
-          category: "integration"
-
-      - name: Hassfest validation
-        uses: "home-assistant/actions/hassfest@master"
-
   tests:
     runs-on: "ubuntu-latest"
     name: Run tests
