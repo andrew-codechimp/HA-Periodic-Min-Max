@@ -96,7 +96,9 @@ async def async_setup_platform(
 
     await async_setup_reload_service(hass, DOMAIN, PLATFORMS)
 
-    async_add_entities([PeriodicMinMaxSensor(hass, entity_id, name, sensor_type, unique_id)])
+    async_add_entities(
+        [PeriodicMinMaxSensor(hass, entity_id, name, sensor_type, unique_id)]
+    )
 
 
 class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
@@ -136,13 +138,14 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         self.max_value: float | None = None
         self._state: Any = None
 
-
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
 
         self.async_on_remove(
             async_track_state_change_event(
-                self.hass, self._source_entity_id, self._async_min_max_sensor_state_listener
+                self.hass,
+                self._source_entity_id,
+                self._async_min_max_sensor_state_listener,
             )
         )
 
@@ -158,18 +161,34 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
         if entry:
             self._unit_of_measurement = entry.unit_of_measurement
-            self._attr_device_class = SensorDeviceClass(entry.device_class) if entry.device_class else None
-            self._attr_icon = entry.icon if entry.icon else entry.original_icon if entry.original_icon else ICON
+            self._attr_device_class = (
+                SensorDeviceClass(entry.device_class) if entry.device_class else None
+            )
+            self._attr_icon = (
+                entry.icon
+                if entry.icon
+                else entry.original_icon
+                if entry.original_icon
+                else ICON
+            )
 
             state = await self.async_get_last_state()
-            if state is not None and state.state not in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
+            if state is not None and state.state not in [
+                STATE_UNKNOWN,
+                STATE_UNAVAILABLE,
+            ]:
                 self._state = float(state.state)
                 self._calc_values()
 
             # Replay current state of source entitiy
             state = self.hass.states.get(self._source_entity_id)
             state_event: Event[EventStateChangedData] = Event(
-                "", {"entity_id": self._source_entity_id, "new_state": state, "old_state": None}
+                "",
+                {
+                    "entity_id": self._source_entity_id,
+                    "new_state": state,
+                    "old_state": None,
+                },
             )
             self._async_min_max_sensor_state_listener(state_event, update_state=False)
 
