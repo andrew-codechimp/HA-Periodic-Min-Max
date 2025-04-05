@@ -3,6 +3,7 @@
 import json
 from logging import Logger, getLogger
 from pathlib import Path
+
 from homeassistant.const import Platform
 
 LOGGER: Logger = getLogger(__package__)
