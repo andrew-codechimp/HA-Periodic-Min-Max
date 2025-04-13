@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
+import voluptuous as vol
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -20,6 +21,7 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device import async_device_info_to_link_from_entity
@@ -49,6 +51,27 @@ SERVICE_RESET = "reset"
 SENSOR_TYPE_TO_ATTR = {v: k for k, v in SENSOR_TYPES.items()}
 
 
+@callback
+def async_add_to_device(
+    hass: HomeAssistant, entry: ConfigEntry, entity_id: str
+) -> str | None:
+    """Add our config entry to the tracked entity's device."""
+    registry = er.async_get(hass)
+    device_registry = dr.async_get(hass)
+    device_id = None
+
+    if (
+        not (source_device := registry.async_get(entity_id))
+        or not (device_id := source_device.device_id)
+        or not (device_registry.async_get(device_id))
+    ):
+        return device_id
+
+    device_registry.async_update_device(device_id, add_config_entry_id=entry.entry_id)
+
+    return device_id
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -56,10 +79,21 @@ async def async_setup_entry(
 ) -> None:
     """Initialize min/max/mean config entry."""
     registry = er.async_get(hass)
-    entity_id = er.async_validate_entity_id(
-        registry, config_entry.options[CONF_ENTITY_ID]
-    )
+    try:
+        entity_id = er.async_validate_entity_id(
+            registry, config_entry.options[CONF_ENTITY_ID]
+        )
+    except vol.Invalid:
+        # The entity is identified by an unknown entity registry ID
+        LOGGER.error(
+            "Failed to setup periodic_min_max for unknown entity %s",
+            config_entry.options[CONF_ENTITY_ID],
+        )
+        return False
+
     sensor_type = config_entry.options[CONF_TYPE]
+
+    async_add_to_device(hass, config_entry, entity_id)
 
     async_add_entities(
         [
