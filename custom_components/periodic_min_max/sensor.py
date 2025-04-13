@@ -29,7 +29,10 @@ from homeassistant.helpers.entity_platform import (
     AddConfigEntryEntitiesCallback,
     AddEntitiesCallback,
 )
-from homeassistant.helpers.event import async_track_state_change_event
+from homeassistant.helpers.event import (
+    async_track_entity_registry_updated_event,
+    async_track_state_change_event,
+)
 from homeassistant.helpers.reload import async_setup_reload_service
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateType
@@ -72,16 +75,22 @@ def async_add_to_device(
     return device_id
 
 
+async def config_entry_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Update listener, called when the config entry options are changed."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Initialize min/max/mean config entry."""
-    registry = er.async_get(hass)
+    entity_registry = er.async_get(hass)
+    device_registry = dr.async_get(hass)
     try:
         entity_id = er.async_validate_entity_id(
-            registry, config_entry.options[CONF_ENTITY_ID]
+            entity_registry, config_entry.options[CONF_ENTITY_ID]
         )
     except vol.Invalid:
         # The entity is identified by an unknown entity registry ID
@@ -93,7 +102,46 @@ async def async_setup_entry(
 
     sensor_type = config_entry.options[CONF_TYPE]
 
-    async_add_to_device(hass, config_entry, entity_id)
+    async def async_registry_updated(
+        event: Event[er.EventEntityRegistryUpdatedData],
+    ) -> None:
+        """Handle entity registry update."""
+        data = event.data
+        if data["action"] == "remove":
+            await hass.config_entries.async_remove(config_entry.entry_id)
+
+        if data["action"] != "update":
+            return
+
+        if "entity_id" in data["changes"]:
+            # Entity_id changed, reload the config entry
+            await hass.config_entries.async_reload(config_entry.entry_id)
+
+        if device_id and "device_id" in data["changes"]:
+            # If the tracked entity is no longer in the device, remove our config entry
+            # from the device
+            if (
+                not (entity_entry := entity_registry.async_get(data[CONF_ENTITY_ID]))
+                or not device_registry.async_get(device_id)
+                or entity_entry.device_id == device_id
+            ):
+                # No need to do any cleanup
+                return
+
+            device_registry.async_update_device(
+                device_id, remove_config_entry_id=config_entry.entry_id
+            )
+
+    config_entry.async_on_unload(
+        async_track_entity_registry_updated_event(
+            hass, entity_id, async_registry_updated
+        )
+    )
+    config_entry.async_on_unload(
+        config_entry.add_update_listener(config_entry_update_listener)
+    )
+
+    device_id = async_add_to_device(hass, config_entry, entity_id)
 
     async_add_entities(
         [
