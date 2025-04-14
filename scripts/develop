@@ -11,13 +11,10 @@ if [[ ! -d "${PWD}/config" ]]; then
 fi
 
 # Set the path to custom_components
-## This let's us have the structure we want <root>/custom_components/periodic_min_max
+## This let's us have the structure we want <root>/custom_components/integration_battery_types
 ## while at the same time have Home Assistant configuration inside <root>/config
 ## without resulting to symlinks.
 export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
 
 # Start Home Assistant
-# debugpy logging, if required: --log-to debugpy
-python3 -Xfrozen_modules=off \
-    -m debugpy --listen localhost:5678 \
-    -m homeassistant --config "${PWD}/config"
+hass --config "${PWD}/config" --debug
