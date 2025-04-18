@@ -49,10 +49,12 @@ Installation via HACS is recommended, but a manual setup is supported.
 
 ### Translations
 
-<details>
-<summary>You can help by adding missing translations when you are a native speaker. Or add a complete new language when there is no language file available.</summary>
+You can help by adding missing translations when you are a native speaker. Or add a complete new language when there is no language file available.
 
 Periodic Min/Max uses Crowdin to make contributing easy.
+
+<details>
+<summary>Instructions</summary>
 
 **Changing or adding to existing language**
 
