@@ -24,6 +24,25 @@ _If you want to show your support please_
 
 ![Reset Action](https://raw.githubusercontent.com/andrew-codechimp/ha-periodic-min-max/main/images/action-reset.png "Reset Action")
 
+## Tips
+
+If you have many sensors you want to reset daily, create a label called daily reset, add the label to each sensor you want resetting, then create one automation that resets all sensors with that label at midnight.
+
+```
+alias: Periodic Reset Daily at Midnight
+description: ""
+triggers:
+  - trigger: time
+    at: "00:00:00"
+conditions: []
+actions:
+  - action: periodic_min_max.reset
+    target:
+      label_id: daily_reset
+    data: {}
+mode: single
+```
+
 ## Installation
 
 ### HACS
