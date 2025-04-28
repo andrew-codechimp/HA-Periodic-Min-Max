@@ -36,8 +36,15 @@ from homeassistant.helpers.event import (
 from homeassistant.helpers.reload import async_setup_reload_service
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateType
+from homeassistant.util import dt as dt_util
 
-from .const import CONF_ENTITY_ID, DOMAIN, LOGGER, PLATFORMS
+from .const import (
+    ATTR_LAST_CHANGED_VALUE,
+    CONF_ENTITY_ID,
+    DOMAIN,
+    LOGGER,
+    PLATFORMS,
+)
 
 ATTR_MIN_VALUE = "min_value"
 ATTR_MAX_VALUE = "max_value"
@@ -189,6 +196,8 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     _attr_icon = ICON
     _attr_should_poll = False
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _state_had_real_change = False
+    _attr_last_changed_value: datetime = dt_util.utcnow().isoformat()
 
     def __init__(
         self,
@@ -222,6 +231,14 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
+
+        await super().async_added_to_hass()
+
+        last_state = await self.async_get_last_state()
+        if last_state:
+            last_attrs = last_state.attributes
+            if last_attrs and ATTR_LAST_CHANGED_VALUE in last_attrs:
+                self._attr_last_changed_value = last_attrs[ATTR_LAST_CHANGED_VALUE]
 
         self.async_on_remove(
             async_track_state_change_event(
@@ -291,6 +308,15 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             return "ERR"
         return self._unit_of_measurement
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return the device specific state attributes."""
+        attributes: dict[str, Any] = {}
+
+        attributes[ATTR_LAST_CHANGED_VALUE] = self._attr_last_changed_value
+
+        return attributes
+
     @callback
     def _async_min_max_sensor_state_listener(
         self, event: Event[EventStateChangedData], update_state: bool = True
@@ -337,23 +363,32 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             return
 
         self._calc_values()
+
+        if self._state_had_real_change:
+            self._attr_last_changed_value = dt_util.utcnow().isoformat(sep=" ")
+
         self.async_write_ha_state()
 
     @callback
     def _calc_values(self) -> None:
         """Calculate the values."""
+        self._state_had_real_change = False
 
         """Calculate min value, honoring unknown states."""
-        if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
-            self.min_value is None or self.min_value > self._state
-        ):
-            self.min_value = self._state
+        if self._sensor_attr == ATTR_MIN_VALUE:
+            if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
+                self.min_value is None or self.min_value > self._state
+            ):
+                self.min_value = self._state
+                self._state_had_real_change = True
 
         """Calculate max value, honoring unknown states."""
-        if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
-            self.max_value is None or self.max_value < self._state
-        ):
-            self.max_value = self._state
+        if self._sensor_attr == ATTR_MAX_VALUE:
+            if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
+                self.max_value is None or self.max_value < self._state
+            ):
+                self.max_value = self._state
+                self._state_had_real_change = True
 
     async def handle_reset(self) -> None:
         """Set the min & max to current state."""
