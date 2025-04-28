@@ -24,4 +24,4 @@ PLATFORMS = [Platform.SENSOR]
 
 CONF_ENTITY_ID = "entity_id"
 
-ATTR_LAST_CHANGED_VALUE = "last_changed_value"
+ATTR_LAST_MODIFIED = "last_modified"

@@ -39,7 +39,7 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateTyp
 from homeassistant.util import dt as dt_util
 
 from .const import (
-    ATTR_LAST_CHANGED_VALUE,
+    ATTR_LAST_MODIFIED,
     CONF_ENTITY_ID,
     DOMAIN,
     LOGGER,
@@ -197,7 +197,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     _attr_should_poll = False
     _attr_state_class = SensorStateClass.MEASUREMENT
     _state_had_real_change = False
-    _attr_last_changed_value: datetime = dt_util.utcnow().isoformat()
+    _attr_last_modified: datetime = dt_util.utcnow().isoformat()
 
     def __init__(
         self,
@@ -237,8 +237,8 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         last_state = await self.async_get_last_state()
         if last_state:
             last_attrs = last_state.attributes
-            if last_attrs and ATTR_LAST_CHANGED_VALUE in last_attrs:
-                self._attr_last_changed_value = last_attrs[ATTR_LAST_CHANGED_VALUE]
+            if last_attrs and ATTR_LAST_MODIFIED in last_attrs:
+                self._attr_last_modified = last_attrs[ATTR_LAST_MODIFIED]
 
         self.async_on_remove(
             async_track_state_change_event(
@@ -313,7 +313,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         """Return the device specific state attributes."""
         attributes: dict[str, Any] = {}
 
-        attributes[ATTR_LAST_CHANGED_VALUE] = self._attr_last_changed_value
+        attributes[ATTR_LAST_MODIFIED] = self._attr_last_modified
 
         return attributes
 
@@ -365,7 +365,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         self._calc_values()
 
         if self._state_had_real_change:
-            self._attr_last_changed_value = dt_util.utcnow().isoformat(sep=" ")
+            self._attr_last_modified = dt_util.utcnow().isoformat(sep=" ")
 
         self.async_write_ha_state()
 
