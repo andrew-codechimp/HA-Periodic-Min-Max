@@ -82,6 +82,7 @@ async def test_max_sensor(
     entity = entity_registry.async_get("sensor.test_max")
     assert entity.unique_id == "very_unique_id"
 
+
 async def test_value_error(
     hass: HomeAssistant, entity_registry: er.EntityRegistry
 ) -> None:
