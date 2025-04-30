@@ -10,7 +10,7 @@ Periodic Min/Max Helpers for Home Assistant
 
 The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is maintained through HA restarts.
 
-A `last_modified` attribute is available to check when the min or max was really changed, this attribute does not update on HA restarts giving you an accurate indication on when the new min or max was hit. This can be useful for using as a trigger on an automation or for comparing via a template for a daily update.
+A `last_modified` attribute is available to check when the min or max was really changed, this attribute does not update on HA restarts giving you an accurate indication on when the new min or max was hit. This can be useful for using as a trigger on an automation or for comparing via a template for a daily update. The attribute is in UTC.
 
 ## Example use cases
 
