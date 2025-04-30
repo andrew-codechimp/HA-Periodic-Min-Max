@@ -45,6 +45,12 @@ actions:
 mode: single
 ```
 
+To tell whether a new min or max has been achieved in the last 24 hours use this template
+
+```
+{{ (utcnow() - as_datetime(state_attr("sensor.my_sensor", "last_modified"))).total_seconds() < 86400 }}
+```
+
 ## Installation
 
 ### HACS
