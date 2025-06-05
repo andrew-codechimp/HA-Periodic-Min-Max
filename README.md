@@ -57,6 +57,8 @@ To tell whether a new min or max has been achieved in the last 24 hours use this
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=andrew-codechimp&repository=HA-Periodic-Min-Max&category=Integration)
 
+Or search for **Periodic Min/Max** within HACS if My Home Assistant does not work for you
+
 Restart Home Assistant
 
 In the HA UI go to "Configuration" -> "Devices & services" -> "Helpers" click "+" and select "Periodic Min/Max"
