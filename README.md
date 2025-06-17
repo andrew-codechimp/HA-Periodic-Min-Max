@@ -76,6 +76,12 @@ Installation via HACS is recommended, but a manual setup is supported.
 
 </details>
 
+## Usage
+
+A new Periodic Min/Max helper will be available within Settings/Helpers or click the My link to jump straight there
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=periodic_min_max)
+
 ### Translations
 
 You can help by adding missing translations when you are a native speaker. Or add a complete new language when there is no language file available.
