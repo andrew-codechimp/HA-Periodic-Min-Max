@@ -2,7 +2,8 @@
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
-[![Downloads][download-latest-shield]](Downloads)
+[![Downloads][download-latest-shield]]()
+[![HACS Installs][hacs-installs-shield]]()
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
 
@@ -126,3 +127,4 @@ Create an [Issue](https://github.com/andrew-codechimp/HA-Periodic-Min-Max/issues
 [releases-shield]: https://img.shields.io/github/release/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
 [releases]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max/releases
 [download-latest-shield]: https://img.shields.io/github/downloads/andrew-codechimp/HA-Periodic-Min-Max/latest/total?style=for-the-badge
+[hacs-installs-shield]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Flauwbier.nl%2Fhacs%2Fperiodic_min_max&style=for-the-badge
