@@ -92,7 +92,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
-    """Initialize min/max/mean config entry."""
+    """Initialize periodic min/max config entry."""
     entity_registry = er.async_get(hass)
     device_registry = dr.async_get(hass)
     try:
@@ -177,7 +177,7 @@ async def async_setup_platform(
     async_add_entities: AddEntitiesCallback,
     discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
-    """Set up the min/max/mean sensor."""
+    """Set up the periodic min/max sensor."""
     entity_id: str = config[CONF_ENTITY_ID]
     name: str | None = config.get(CONF_NAME)
     sensor_type: str = config[CONF_TYPE]
