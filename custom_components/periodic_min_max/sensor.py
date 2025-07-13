@@ -62,24 +62,16 @@ SENSOR_TYPE_TO_ATTR = {v: k for k, v in SENSOR_TYPES.items()}
 
 
 @callback
-def async_add_to_device(
-    hass: HomeAssistant, entry: ConfigEntry, entity_id: str
+def async_get_source_entity_device_id(
+    hass: HomeAssistant, entity_id: str
 ) -> str | None:
-    """Add our config entry to the tracked entity's device."""
+    """Get the entity device id."""
     registry = er.async_get(hass)
-    device_registry = dr.async_get(hass)
-    device_id = None
 
-    if (
-        not (source_device := registry.async_get(entity_id))
-        or not (device_id := source_device.device_id)
-        or not (device_registry.async_get(device_id))
-    ):
-        return device_id
+    if not (source_entity := registry.async_get(entity_id)):
+        return None
 
-    device_registry.async_update_device(device_id, add_config_entry_id=entry.entry_id)
-
-    return device_id
+    return source_entity.device_id
 
 
 async def config_entry_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -96,7 +88,7 @@ async def async_setup_entry(
     entity_registry = er.async_get(hass)
     device_registry = dr.async_get(hass)
     try:
-        entity_id = er.async_validate_entity_id(
+        source_entity_id = er.async_validate_entity_id(
             entity_registry, config_entry.options[CONF_ENTITY_ID]
         )
     except vol.Invalid:
@@ -106,6 +98,9 @@ async def async_setup_entry(
             config_entry.options[CONF_ENTITY_ID],
         )
         return False
+
+    source_entity = entity_registry.async_get(source_entity_id)
+    device_id = source_entity.device_id if source_entity else None
 
     sensor_type = config_entry.options[CONF_TYPE]
 
@@ -141,20 +136,18 @@ async def async_setup_entry(
 
     config_entry.async_on_unload(
         async_track_entity_registry_updated_event(
-            hass, entity_id, async_registry_updated
+            hass, source_entity_id, async_registry_updated
         )
     )
     config_entry.async_on_unload(
         config_entry.add_update_listener(config_entry_update_listener)
     )
 
-    device_id = async_add_to_device(hass, config_entry, entity_id)
-
     async_add_entities(
         [
             PeriodicMinMaxSensor(
                 hass,
-                entity_id,
+                source_entity_id,
                 config_entry.title,
                 sensor_type,
                 config_entry.entry_id,
@@ -178,7 +171,7 @@ async def async_setup_platform(
     discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     """Set up the periodic min/max sensor."""
-    entity_id: str = config[CONF_ENTITY_ID]
+    source_entity_id: str = config[CONF_ENTITY_ID]
     name: str | None = config.get(CONF_NAME)
     sensor_type: str = config[CONF_TYPE]
     unique_id = config.get(CONF_UNIQUE_ID)
@@ -186,7 +179,7 @@ async def async_setup_platform(
     await async_setup_reload_service(hass, DOMAIN, PLATFORMS)
 
     async_add_entities(
-        [PeriodicMinMaxSensor(hass, entity_id, name, sensor_type, unique_id)]
+        [PeriodicMinMaxSensor(hass, source_entity_id, name, sensor_type, unique_id)]
     )
 
 
@@ -218,16 +211,19 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             self._attr_name = f"{sensor_type} sensor".capitalize()
         self._sensor_attr = SENSOR_TYPE_TO_ATTR[self._sensor_type]
 
-        self._attr_device_info = async_device_info_to_link_from_entity(
-            hass,
-            source_entity_id,
-        )
-
         self._unit_of_measurement: str | None = None
         self._unit_of_measurement_mismatch = False
         self.min_value: float | None = None
         self.max_value: float | None = None
         self._state: Any = None
+
+        registry = er.async_get(hass)
+        device_registry = dr.async_get(hass)
+        source_entity = registry.async_get(source_entity_id)
+        device_id = source_entity.device_id if source_entity else None
+
+        if device_id and (device := device_registry.async_get(device_id)):
+            self.device_entry = device
 
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""

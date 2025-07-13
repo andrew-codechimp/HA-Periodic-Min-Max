@@ -58,6 +58,9 @@ class ConfigFlowHandler(SchemaConfigFlowHandler, domain=DOMAIN):
     config_flow = CONFIG_FLOW
     options_flow = OPTIONS_FLOW
 
+    VERSION = 1
+    MINOR_VERSION = 2
+
     def async_config_entry_title(self, options: Mapping[str, Any]) -> str:
         """Return config entry title."""
         return cast(str, options["name"]) if "name" in options else ""
