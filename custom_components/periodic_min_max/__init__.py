@@ -72,7 +72,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except vol.Invalid:
         # The entity is identified by an unknown entity registry ID
         LOGGER.error(
-            "Failed to setup switch_as_x for unknown entity %s",
+            "Failed to setup periodic_min_max for unknown entity %s",
             entry.options[CONF_ENTITY_ID],
         )
         return False
@@ -85,7 +85,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def source_entity_removed() -> None:
         # The source entity has been removed, we remove the config entry because
-        # switch_as_x does not allow replacing the wrapped entity.
+        # periodic_min_max will not work without the source entity.
         await hass.config_entries.async_remove(entry.entry_id)
 
     entry.async_on_unload(
