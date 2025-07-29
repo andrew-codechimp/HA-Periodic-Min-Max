@@ -386,7 +386,8 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         """Set the min & max to current state."""
         if self._state is None or self._state in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
             LOGGER.warning(
-                "Cannot reset min/max, current state is unknown or unavailable"
+                "Cannot reset %s, current state is unknown or unavailable",
+                self.entity_id,
             )
             return
 
