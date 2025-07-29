@@ -82,7 +82,7 @@ async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
-) -> None:
+) -> bool:
     """Initialize periodic min/max config entry."""
     entity_registry = er.async_get(hass)
     device_registry = dr.async_get(hass)
@@ -122,7 +122,7 @@ async def async_setup_entry(
             # If the tracked entity is no longer in the device, remove our config entry
             # from the device
             if (
-                not (entity_entry := entity_registry.async_get(data[CONF_ENTITY_ID]))
+                not (entity_entry := entity_registry.async_get(data["entity_id"]))
                 or not device_registry.async_get(device_id)
                 or entity_entry.device_id == device_id
             ):
@@ -162,6 +162,8 @@ async def async_setup_entry(
         "handle_reset",
     )
 
+    return True
+
 
 async def async_setup_platform(
     hass: HomeAssistant,
@@ -189,7 +191,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     _attr_should_poll = False
     _attr_state_class = SensorStateClass.MEASUREMENT
     _state_had_real_change = False
-    _attr_last_modified: datetime = dt_util.utcnow().isoformat()
+    _attr_last_modified: str = dt_util.utcnow().isoformat()
 
     def __init__(
         self,
@@ -284,7 +286,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
                     "old_state": None,
                 },
             )
-            self._async_min_max_sensor_state_listener(state_event, update_state=False)
+            self._async_min_max_sensor_state_listener(state_event)
 
             self._calc_values()
 
@@ -314,7 +316,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     @callback
     def _async_min_max_sensor_state_listener(
-        self, event: Event[EventStateChangedData], update_state: bool = True
+        self, event: Event[EventStateChangedData]
     ) -> None:
         """Handle the sensor state changes."""
         new_state = event.data["new_state"]
@@ -329,11 +331,6 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             ]
         ):
             self._state = STATE_UNKNOWN
-            if not update_state:
-                return
-
-            self._calc_values()
-            self.async_write_ha_state()
             return
 
         if self._unit_of_measurement is None:
@@ -353,9 +350,6 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             self._state = float(new_state.state)
         except ValueError:
             LOGGER.warning("Unable to store state. Only numerical states are supported")
-
-        if not update_state:
-            return
 
         self._calc_values()
 
@@ -387,6 +381,13 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     async def handle_reset(self) -> None:
         """Set the min & max to current state."""
+        if self._state is None or self._state in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
+            LOGGER.warning(
+                "Cannot reset %s, current state is unknown or unavailable",
+                self.entity_id,
+            )
+            return
+
         self.min_value = self._state
         self.max_value = self._state
 
