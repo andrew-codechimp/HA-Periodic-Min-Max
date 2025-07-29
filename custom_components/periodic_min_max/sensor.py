@@ -91,7 +91,7 @@ async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
-) -> None:
+) -> bool:
     """Initialize periodic min/max config entry."""
     entity_registry = er.async_get(hass)
     device_registry = dr.async_get(hass)
@@ -128,7 +128,7 @@ async def async_setup_entry(
             # If the tracked entity is no longer in the device, remove our config entry
             # from the device
             if (
-                not (entity_entry := entity_registry.async_get(data[CONF_ENTITY_ID]))
+                not (entity_entry := entity_registry.async_get(data["entity_id"]))
                 or not device_registry.async_get(device_id)
                 or entity_entry.device_id == device_id
             ):
@@ -170,6 +170,8 @@ async def async_setup_entry(
         "handle_reset",
     )
 
+    return True
+
 
 async def async_setup_platform(
     hass: HomeAssistant,
@@ -197,7 +199,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     _attr_should_poll = False
     _attr_state_class = SensorStateClass.MEASUREMENT
     _state_had_real_change = False
-    _attr_last_modified: datetime = dt_util.utcnow().isoformat()
+    _attr_last_modified: str = dt_util.utcnow().isoformat()
 
     def __init__(
         self,
