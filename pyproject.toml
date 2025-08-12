@@ -26,7 +26,7 @@ python = ">=3.13,<3.14"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "4.2.0"
 pre-commit-hooks = "5.0.0"
-pylint = "3.3.7"
+pylint = "3.3.8"
 ruff = "0.12.8"
 
 [tool.poetry.urls]
