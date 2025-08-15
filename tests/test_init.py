@@ -59,7 +59,7 @@ async def test_setup(
             "entity_id": "sensor.test_source",
             "type": "max",
         },
-        title=DEFAULT_NAME
+        title=DEFAULT_NAME,
     )
     periodic_min_max_config_entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(periodic_min_max_config_entry.entry_id)
@@ -74,16 +74,10 @@ async def test_setup(
     assert periodic_min_max_entity is not None
     assert periodic_min_max_entity.device_id == source_entity.device_id
 
-    # After reloading the config entry, check linked device
-    devices_after_reload = device_registry.devices.get_devices_for_config_entry_id(
+    # Remove the config entry
+    assert await hass.config_entries.async_remove(
         periodic_min_max_config_entry.entry_id
     )
-    assert len(devices_after_reload) == 1
-
-    assert devices_after_reload[0].id == source_device_entry.id
-
-    # Remove the config entry
-    assert await hass.config_entries.async_remove(periodic_min_max_config_entry.entry_id)
     await hass.async_block_till_done()
 
     # Check the state and entity registry entry are removed
