@@ -4,6 +4,9 @@ from homeassistant.components.sensor import ATTR_STATE_CLASS, SensorStateClass
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.setup import async_setup_component
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.periodic_min_max.const import DOMAIN
 
 VALUES_NUMERIC = [17, 20, 15.2, 5, 3.8, 9.2, 6.7, 14, 6]
 VALUES_ERROR = [17, "string", 15.3]
@@ -22,30 +25,31 @@ async def test_min_sensor(
     )
     assert sensor_entity_entry.entity_id == "sensor.test_1"
 
-    config = {
-        "sensor": {
-            "platform": "periodic_min_max",
-            "name": "test_min",
-            "type": "min",
-            "entity_id": "sensor.test_1",
-            "unique_id": "very_unique_id",
-        }
-    }
+    periodic_min_max_entity_id = "sensor.my_periodic_min_max"
 
-    assert await async_setup_component(hass, "sensor", config)
+    config_entry = MockConfigEntry(
+        data={},
+        domain=DOMAIN,
+        options={
+            "name": "My periodic min max",
+            "entity_id": "sensor.test_1",
+            "type": "min",
+        },
+        title="My periodic_min_max",
+    )
+
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
 
     for value in VALUES_NUMERIC:
         hass.states.async_set(sensor_entity_entry.entity_id, value)
         await hass.async_block_till_done()
 
-    state = hass.states.get("sensor.test_min")
+    state = hass.states.get(periodic_min_max_entity_id)
 
     assert str(float(MIN_VALUE)) == state.state
     assert state.attributes.get(ATTR_STATE_CLASS) == SensorStateClass.MEASUREMENT
-
-    entity = entity_registry.async_get("sensor.test_min")
-    assert entity.unique_id == "very_unique_id"
 
 
 async def test_max_sensor(
@@ -57,30 +61,31 @@ async def test_max_sensor(
     )
     assert sensor_entity_entry.entity_id == "sensor.test_1"
 
-    config = {
-        "sensor": {
-            "platform": "periodic_min_max",
-            "name": "test_max",
-            "type": "max",
-            "entity_id": "sensor.test_1",
-            "unique_id": "very_unique_id",
-        }
-    }
+    periodic_min_max_entity_id = "sensor.my_periodic_min_max"
 
-    assert await async_setup_component(hass, "sensor", config)
+    config_entry = MockConfigEntry(
+        data={},
+        domain=DOMAIN,
+        options={
+            "name": "My periodic min max",
+            "entity_id": "sensor.test_1",
+            "type": "max",
+        },
+        title="My periodic_min_max",
+    )
+
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
 
     for value in VALUES_NUMERIC:
         hass.states.async_set(sensor_entity_entry.entity_id, value)
         await hass.async_block_till_done()
 
-    state = hass.states.get("sensor.test_max")
+    state = hass.states.get(periodic_min_max_entity_id)
 
     assert str(float(MAX_VALUE)) == state.state
     assert state.attributes.get(ATTR_STATE_CLASS) == SensorStateClass.MEASUREMENT
-
-    entity = entity_registry.async_get("sensor.test_max")
-    assert entity.unique_id == "very_unique_id"
 
 
 async def test_value_error(
@@ -92,26 +97,27 @@ async def test_value_error(
     )
     assert sensor_entity_entry.entity_id == "sensor.test_1"
 
-    config = {
-        "sensor": {
-            "platform": "periodic_min_max",
-            "name": "test_max",
-            "type": "max",
-            "entity_id": "sensor.test_1",
-            "unique_id": "very_unique_id",
-        }
-    }
+    periodic_min_max_entity_id = "sensor.my_periodic_min_max"
 
-    assert await async_setup_component(hass, "sensor", config)
+    config_entry = MockConfigEntry(
+        data={},
+        domain=DOMAIN,
+        options={
+            "name": "My periodic min max",
+            "entity_id": "sensor.test_1",
+            "type": "max",
+        },
+        title="My periodic_min_max",
+    )
+
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
 
     for value in VALUES_ERROR:
         hass.states.async_set(sensor_entity_entry.entity_id, value)
         await hass.async_block_till_done()
 
-    state = hass.states.get("sensor.test_max")
+    state = hass.states.get(periodic_min_max_entity_id)
 
     assert state.attributes.get(ATTR_STATE_CLASS) == SensorStateClass.MEASUREMENT
-
-    entity = entity_registry.async_get("sensor.test_max")
-    assert entity.unique_id == "very_unique_id"
