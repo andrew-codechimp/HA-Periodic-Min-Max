@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from unittest.mock import AsyncMock
 
-from homeassistant import config_entries
-from homeassistant.const import CONF_ENTITY_ID, CONF_NAME, CONF_TYPE
-from homeassistant.core import HomeAssistant
-from homeassistant.data_entry_flow import FlowResultType
-
 from custom_components.periodic_min_max.const import DOMAIN
+
+from homeassistant import config_entries
+from homeassistant.core import HomeAssistant
+from homeassistant.const import CONF_NAME, CONF_TYPE, CONF_ENTITY_ID
+from homeassistant.data_entry_flow import FlowResultType
 
 from .const import DEFAULT_NAME
 

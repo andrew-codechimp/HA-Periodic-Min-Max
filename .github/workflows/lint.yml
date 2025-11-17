@@ -3,37 +3,72 @@ name: "Lint"
 on:
   push:
     paths:
-      - '**.py' # Run if pushed commits include a change to a Python (.py) file.
-      - '.github/workflows/lint.yml' # Run if pushed commits include a change to a github actions workflow file.
-      - 'requirements.txt' # Run if pushed commits include a change to the Python requirements.txt file.
-      - '.pyprogject.toml' # Run if project configuration file changes.
+      - "**.py" # Run if pushed commits include a change to a Python (.py) file.
+      - ".github/workflows/lint.yml" # Run if pushed commits include a change to a github actions workflow file.
+      - "pyproject.toml" # Run if project configuration file changes.
   pull_request:
     paths:
-      - '**.py' # Run if pushed commits include a change to a Python (.py) file.
-      - '.github/workflows/lint.yml' # Run if pushed commits include a change to a github actions workflow file.
-      - 'requirements.txt' # Run if pushed commits include a change to the Python requirements.txt file.
-      - '.pyprogject.toml' # Run if project configuration file changes.
+      - "**.py" # Run if pushed commits include a change to a Python (.py) file.
+      - ".github/workflows/lint.yml" # Run if pushed commits include a change to a github actions workflow file.
+      - "pyproject.toml" # Run if project configuration file changes.
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: "ubuntu-latest"
-    strategy:
-      matrix:
-        python-version: ["3.13"]
+  ruff_check:
+    runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v5
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Ruff Check
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: check --output-format=github
 
-    - name: Install dependencies from requirements.txt
-      run: |
-        if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+      - name: Ruff Format
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: format --check --diff
 
-    - name: Analyse the code with ruff
-      run: |
-        python3 -m ruff check .
+  mypy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run mypy
+        run: uv run mypy
+
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run tests
+        run: uv run pytest
