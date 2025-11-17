@@ -1,7 +1,7 @@
 """Tests for the periodic_min_max services."""
 
 from custom_components.periodic_min_max.const import DOMAIN
-from custom_components.periodic_min_max.sensor import SERVICE_RESET
+from custom_components.periodic_min_max.services import SERVICE_RESET
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from homeassistant.core import HomeAssistant

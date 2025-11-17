@@ -10,27 +10,30 @@ import voluptuous as vol
 from homeassistant.core import Event, HomeAssistant, EventStateChangedData, callback
 from homeassistant.util import dt as dt_util
 from homeassistant.const import (
-    ATTR_UNIT_OF_MEASUREMENT,
     CONF_TYPE,
+    STATE_UNKNOWN,
     STATE_UNAVAILABLE,
     ATTR_UNIT_OF_MEASUREMENT,
 )
-from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
-from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers import entity_registry as er
-from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.event import (
     async_track_state_change_event,
     async_track_entity_registry_updated_event,
 )
-from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import StateType
-from homeassistant.util import dt as dt_util
+from homeassistant.components.sensor import (
+    SensorEntity,
+    SensorStateClass,
+    SensorDeviceClass,
+)
+from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
-    ATTR_LAST_MODIFIED,
-    CONF_ENTITY_ID,
     LOGGER,
+    CONF_ENTITY_ID,
+    ATTR_LAST_MODIFIED,
 )
 
 ATTR_MIN_VALUE = "min_value"
