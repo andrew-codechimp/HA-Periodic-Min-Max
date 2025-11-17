@@ -1,7 +1,9 @@
 """The test for the periodic_min_max sensor platform."""
 
-from homeassistant.components.sensor import ATTR_STATE_CLASS, SensorStateClass
 from homeassistant.core import HomeAssistant
+from homeassistant.setup import async_setup_component
+from homeassistant.helpers import entity_registry as er
+from homeassistant.components.sensor import ATTR_STATE_CLASS, SensorStateClass
 from homeassistant.helpers import entity_registry as er
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
