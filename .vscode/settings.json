@@ -1,8 +1,10 @@
 {
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff"
+    "git.autofetch": true,
+    "python.createEnvironment.trigger": "off",
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always",
     },
-    "terminal.integrated.env.linux": {
-        "PYTHONPATH": "${workspaceRoot}"
-    }
+    "python.terminal.activateEnvInCurrentTerminal": true,
 }

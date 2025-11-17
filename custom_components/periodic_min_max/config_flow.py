@@ -2,21 +2,22 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Any, cast
+from collections.abc import Mapping
 
 import voluptuous as vol
-from homeassistant.components.input_number import DOMAIN as INPUT_NUMBER_DOMAIN
-from homeassistant.components.number import DOMAIN as NUMBER_DOMAIN
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+
 from homeassistant.const import CONF_TYPE
 from homeassistant.helpers import selector
+from homeassistant.components.number import DOMAIN as NUMBER_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.input_number import DOMAIN as INPUT_NUMBER_DOMAIN
 from homeassistant.helpers.schema_config_entry_flow import (
-    SchemaConfigFlowHandler,
     SchemaFlowFormStep,
+    SchemaConfigFlowHandler,
 )
 
-from .const import CONF_ENTITY_ID, DOMAIN
+from .const import DOMAIN, CONF_ENTITY_ID
 
 _STATISTIC_MEASURES = ["min", "max"]
 

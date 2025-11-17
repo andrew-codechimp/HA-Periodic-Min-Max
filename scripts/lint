@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-set -e
-
+# Move to project root
 cd "$(dirname "$0")/.."
 
-ruff check . --fix
+echo "Running ruff check..."
+uv run ruff check . --fix
+
+echo "Running mypy..."
+uv run mypy
+
+echo "Running tests..."
+uv run pytest

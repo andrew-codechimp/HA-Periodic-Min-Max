@@ -1,12 +1,12 @@
 """Tests for the periodic_min_max services."""
 
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
-from homeassistant.setup import async_setup_component
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-
 from custom_components.periodic_min_max.const import DOMAIN
 from custom_components.periodic_min_max.sensor import SERVICE_RESET
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from homeassistant.core import HomeAssistant
+from homeassistant.setup import async_setup_component
+from homeassistant.helpers import entity_registry as er
 
 from .test_sensor import LAST_VALUE
 
@@ -43,7 +43,6 @@ async def test_service_reset(
 
     assert await async_setup_component(hass, DOMAIN, config_entry)
     await hass.async_block_till_done()
-
 
     await hass.services.async_call(
         DOMAIN,

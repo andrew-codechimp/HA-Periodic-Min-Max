@@ -1,9 +1,9 @@
 """The test for the periodic_min_max sensor platform."""
 
-from homeassistant.components.sensor import ATTR_STATE_CLASS, SensorStateClass
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
 from homeassistant.setup import async_setup_component
+from homeassistant.helpers import entity_registry as er
+from homeassistant.components.sensor import ATTR_STATE_CLASS, SensorStateClass
 
 VALUES_NUMERIC = [17, 20, 15.2, 5, 3.8, 9.2, 6.7, 14, 6]
 VALUES_ERROR = [17, "string", 15.3]
