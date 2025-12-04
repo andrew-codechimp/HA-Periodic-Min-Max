@@ -26,6 +26,7 @@ from .const import (
     CONF_ENTITY_ID,
     MIN_HA_VERSION,
 )
+from .services import async_setup_services
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -57,6 +58,8 @@ async def async_setup(
         )
         LOGGER.critical(msg)
         return False
+
+    async_setup_services(hass)
 
     return True
 

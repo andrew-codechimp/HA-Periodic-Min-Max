@@ -2,6 +2,6 @@
     "name": "Periodic Min/Max",
     "filename": "periodic_min_max.zip",
     "hide_default_branch": true,
-    "homeassistant": "2025.8.0",
+    "homeassistant": "2025.10.0",
     "zip_release": true
 }
