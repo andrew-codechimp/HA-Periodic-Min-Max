@@ -4,10 +4,10 @@
     "config:recommended"
   ],
   "lockFileMaintenance": {
-    "enabled": true,
+    "enabled": true
   },
   "ignoreDeps": [
     "homeassistant",
-    "python",
-  ],
+    "python"
+  ]
 }
