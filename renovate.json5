@@ -3,4 +3,11 @@
   "extends": [
     "config:recommended"
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+  },
+  "ignoreDeps": [
+    "homeassistant",
+    "python",
+  ],
 }
