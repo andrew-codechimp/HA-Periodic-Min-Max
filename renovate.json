@@ -3,7 +3,4 @@
   "extends": [
     "config:recommended"
   ],
-  lockFileMaintenance: {
-    enabled: true,
-  },
 }
