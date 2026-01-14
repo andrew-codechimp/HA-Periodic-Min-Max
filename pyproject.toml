@@ -28,7 +28,7 @@ Changelog = "https://github.com/andrew-codechimp/HA-Periodic-Min-Max/releases"
 [dependency-groups]
 dev = [
     "colorlog",
-    "homeassistant==2025.10.0",
+    "homeassistant==2025.12.5",
     "mypy",
     "pygments",
     "pytest-homeassistant-custom-component",
