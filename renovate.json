@@ -18,6 +18,10 @@
     "homeassistant",
     "python"
   ],
+  "dependencyDashboard": false,
+  "labels": [
+    "dependencies"
+  ],
   "packageRules": [
     {
       "description": "Group dev dependencies",
