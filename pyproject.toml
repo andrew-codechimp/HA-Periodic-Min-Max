@@ -79,6 +79,8 @@ ignore = [
   "RUF012", # Broken rule in some cases
 
   # Project preference
+  "FBT001",  # Boolean parameters
+  "FBT002",  # Boolean default valie
   "EM101",   # Exception must not use a string literal
   "ERA001",  # Found commented-out code
   "RUF001", # String contains ambiguous character

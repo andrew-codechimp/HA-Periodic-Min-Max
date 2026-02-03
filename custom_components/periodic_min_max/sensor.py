@@ -12,6 +12,7 @@ from homeassistant.util import dt as dt_util
 from homeassistant.const import (
     CONF_TYPE,
     STATE_UNKNOWN,
+    CONF_ENTITY_ID,
     STATE_UNAVAILABLE,
     ATTR_UNIT_OF_MEASUREMENT,
 )
@@ -32,7 +33,6 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     LOGGER,
-    CONF_ENTITY_ID,
     ATTR_LAST_MODIFIED,
 )
 
@@ -216,41 +216,40 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
                 "Unable to find entity %s",
                 self._source_entity_id,
             )
+            return
 
-        if entry:
-            self._unit_of_measurement = entry.unit_of_measurement
-            self._attr_device_class = (
-                SensorDeviceClass(entry.device_class) if entry.device_class else None
-            )
-            self._attr_icon = (
-                entry.icon
-                if entry.icon
-                else entry.original_icon
-                if entry.original_icon
-                else ICON
-            )
+        self._attr_device_class = (
+            SensorDeviceClass(entry.device_class) if entry.device_class else None
+        )
+        self._attr_icon = (
+            entry.icon
+            if entry.icon
+            else entry.original_icon
+            if entry.original_icon
+            else ICON
+        )
 
-            state = await self.async_get_last_state()
-            if state is not None and state.state not in [
-                STATE_UNKNOWN,
-                STATE_UNAVAILABLE,
-            ]:
-                self._state = float(state.state)
-                self._calc_values()
-
-            # Replay current state of source entitiy
-            state = self.hass.states.get(self._source_entity_id)
-            state_event: Event[EventStateChangedData] = Event(
-                "",
-                {
-                    "entity_id": self._source_entity_id,
-                    "new_state": state,
-                    "old_state": None,
-                },
-            )
-            self._async_min_max_sensor_state_listener(state_event)
-
+        state = await self.async_get_last_state()
+        if state is not None and state.state not in [
+            STATE_UNKNOWN,
+            STATE_UNAVAILABLE,
+        ]:
+            self._state = float(state.state)
             self._calc_values()
+
+        # Replay current state of source entitiy
+        state = self.hass.states.get(self._source_entity_id)
+        state_event: Event[EventStateChangedData] = Event(
+            "",
+            {
+                "entity_id": self._source_entity_id,
+                "new_state": state,
+                "old_state": None,
+            },
+        )
+        self._async_min_max_sensor_state_listener(state_event)
+
+        self._calc_values()
 
     @property
     def native_value(self) -> StateType | datetime:
@@ -278,7 +277,8 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     @callback
     def _async_min_max_sensor_state_listener(
-        self, event: Event[EventStateChangedData]
+        self,
+        event: Event[EventStateChangedData],
     ) -> None:
         """Handle the sensor state changes."""
         new_state = event.data["new_state"]
