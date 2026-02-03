@@ -218,6 +218,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             )
             return
 
+        self._unit_of_measurement = entry.unit_of_measurement
         self._attr_device_class = (
             SensorDeviceClass(entry.device_class) if entry.device_class else None
         )
@@ -247,7 +248,10 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
                 "old_state": None,
             },
         )
-        self._async_min_max_sensor_state_listener(state_event)
+        self._async_min_max_sensor_state_listener(
+            state_event,
+            update_state=False,
+        )
 
         self._calc_values()
 
@@ -277,8 +281,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
 
     @callback
     def _async_min_max_sensor_state_listener(
-        self,
-        event: Event[EventStateChangedData],
+        self, event: Event[EventStateChangedData], update_state: bool = True
     ) -> None:
         """Handle the sensor state changes."""
         new_state = event.data["new_state"]
@@ -312,6 +315,9 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
             self._state = float(new_state.state)
         except ValueError:
             LOGGER.warning("Unable to store state. Only numerical states are supported")
+
+        if not update_state:
+            return
 
         self._calc_values()
 
