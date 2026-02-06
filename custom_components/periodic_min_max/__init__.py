@@ -10,7 +10,10 @@ import voluptuous as vol
 from awesomeversion.awesomeversion import AwesomeVersion
 
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.const import __version__ as HA_VERSION  # noqa: N812
+from homeassistant.const import (
+    CONF_ENTITY_ID,
+    __version__ as HA_VERSION,  # noqa: N812
+)
 from homeassistant.helpers import entity_registry as er, config_validation as cv
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import ConfigType
@@ -23,7 +26,6 @@ from .const import (
     DOMAIN,
     LOGGER,
     PLATFORMS,
-    CONF_ENTITY_ID,
     MIN_HA_VERSION,
 )
 from .services import async_setup_services

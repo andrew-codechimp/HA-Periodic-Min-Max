@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "title": "Add Periodic Min/Max",
+                "title": "Create Periodic Min/Max",
                 "description": "Create a sensor that is the minimum or maximum of another sensor, resetttable via an action.",
                 "data": {
                     "entity_id": "Input entity",
