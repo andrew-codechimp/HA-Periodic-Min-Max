@@ -1,4 +1,4 @@
-# HA-Periodic-Min-Max
+# Periodic Min/Max
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
