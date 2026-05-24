@@ -2,51 +2,48 @@
 
 from __future__ import annotations
 
-from typing import Any, cast
 from collections.abc import Mapping
+from typing import Any, cast
 
 import voluptuous as vol
 
-from homeassistant.const import CONF_TYPE, CONF_ENTITY_ID
-from homeassistant.helpers import selector
+from homeassistant.components.input_number import DOMAIN as INPUT_NUMBER_DOMAIN
 from homeassistant.components.number import DOMAIN as NUMBER_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.input_number import DOMAIN as INPUT_NUMBER_DOMAIN
+from homeassistant.const import CONF_ENTITY_ID, CONF_TYPE
+from homeassistant.helpers import selector
 from homeassistant.helpers.schema_config_entry_flow import (
-    SchemaFlowFormStep,
     SchemaConfigFlowHandler,
+    SchemaFlowFormStep,
 )
 
-from .const import DOMAIN
+from .const import CONF_EQUAL_UPDATES, DOMAIN
 
 _STATISTIC_MEASURES = ["min", "max"]
 
 
-OPTIONS_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ENTITY_ID): selector.EntitySelector(
-            selector.EntitySelectorConfig(
-                domain=[SENSOR_DOMAIN, NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN],
-                multiple=False,
-            ),
+OPTIONS_SCHEMA = vol.Schema({
+    vol.Required(CONF_ENTITY_ID): selector.EntitySelector(
+        selector.EntitySelectorConfig(
+            domain=[SENSOR_DOMAIN, NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN],
+            multiple=False,
         ),
-        vol.Required(CONF_TYPE): selector.SelectSelector(
-            selector.SelectSelectorConfig(
-                options=_STATISTIC_MEASURES, translation_key=CONF_TYPE
-            ),
+    ),
+    vol.Required(CONF_TYPE): selector.SelectSelector(
+        selector.SelectSelectorConfig(
+            options=_STATISTIC_MEASURES, translation_key=CONF_TYPE
         ),
-    }
-)
+    ),
+    vol.Required(CONF_EQUAL_UPDATES, default=False): selector.BooleanSelector(),
+})
 
-CONFIG_SCHEMA = vol.Schema(
-    {
-        vol.Required("name"): selector.TextSelector(
-            selector.TextSelectorConfig(
-                type=selector.TextSelectorType.TEXT, autocomplete="off"
-            ),
-        )
-    }
-).extend(OPTIONS_SCHEMA.schema)
+CONFIG_SCHEMA = vol.Schema({
+    vol.Required("name"): selector.TextSelector(
+        selector.TextSelectorConfig(
+            type=selector.TextSelectorType.TEXT, autocomplete="off"
+        ),
+    )
+}).extend(OPTIONS_SCHEMA.schema)
 
 CONFIG_FLOW = {
     "user": SchemaFlowFormStep(CONFIG_SCHEMA),

@@ -6,8 +6,14 @@
                 "description": "Create a sensor that is the minimum or maximum of another sensor, resetttable via an action.",
                 "data": {
                     "entity_id": "Input entity",
+                    "equal_updates": "Update on equal values",
                     "name": "Name",
                     "type": "Statistic characteristic"
+                },
+                "data_description": {
+                    "entity_id": "The entity that the sensor will track. The sensor will calculate the minimum or maximum value of this entity until reset via the `reset` action.",
+                    "equal_updates": "If enabled, the sensor will update the `last_modified` attribute even if the input entity value is the same as the current min/max.\nNote that this only updates when the value has changed and returned to the same min/max.",
+                    "type": "Whether the sensor should track the minimum or maximum value of the input entity"
                 }
             }
         }
@@ -17,7 +23,13 @@
             "init": {
                 "data": {
                     "entity_id": "Input entity",
+                    "equal_updates": "Update on equal values",
                     "type": "Statistic characteristic"
+                },
+                "data_description": {
+                    "entity_id": "The entity that the sensor will track. The sensor will calculate the minimum or maximum value of this entity until reset via the `reset` action.",
+                    "equal_updates": "If enabled, the sensor will update the `last_modified` attribute even if the input entity value is the same as the current min/max.\nNote that this only updates when the value has changed and returned to the same min/max.",
+                    "type": "Whether the sensor should track the minimum or maximum value of the input entity"
                 }
             }
         }

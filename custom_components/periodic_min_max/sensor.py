@@ -2,39 +2,36 @@
 
 from __future__ import annotations
 
-from typing import Any
 from datetime import datetime
+from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.core import Event, HomeAssistant, EventStateChangedData, callback
-from homeassistant.util import dt as dt_util
-from homeassistant.const import (
-    CONF_TYPE,
-    STATE_UNKNOWN,
-    CONF_ENTITY_ID,
-    STATE_UNAVAILABLE,
-    ATTR_UNIT_OF_MEASUREMENT,
-)
-from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.helpers.event import (
-    async_track_state_change_event,
-    async_track_entity_registry_updated_event,
-)
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.typing import StateType
 from homeassistant.components.sensor import (
+    SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
-    SensorDeviceClass,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import (
+    ATTR_UNIT_OF_MEASUREMENT,
+    CONF_ENTITY_ID,
+    CONF_TYPE,
+    STATE_UNAVAILABLE,
+    STATE_UNKNOWN,
+)
+from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
+from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.event import (
+    async_track_entity_registry_updated_event,
+    async_track_state_change_event,
 )
 from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.typing import StateType
+from homeassistant.util import dt as dt_util
 
-from .const import (
-    LOGGER,
-    ATTR_LAST_MODIFIED,
-)
+from .const import ATTR_LAST_MODIFIED, CONF_EQUAL_UPDATES, LOGGER
 
 ATTR_MIN_VALUE = "min_value"
 ATTR_MAX_VALUE = "max_value"
@@ -91,6 +88,7 @@ async def async_setup_entry(
     device_id = source_entity.device_id if source_entity else None
 
     sensor_type = config_entry.options[CONF_TYPE]
+    equal_updates = config_entry.options.get(CONF_EQUAL_UPDATES, False)
 
     async def async_registry_updated(
         event: Event[er.EventEntityRegistryUpdatedData],
@@ -131,17 +129,16 @@ async def async_setup_entry(
         config_entry.add_update_listener(config_entry_update_listener)
     )
 
-    async_add_entities(
-        [
-            PeriodicMinMaxSensor(
-                hass,
-                source_entity_id,
-                config_entry.title,
-                sensor_type,
-                config_entry.entry_id,
-            )
-        ]
-    )
+    async_add_entities([
+        PeriodicMinMaxSensor(
+            hass,
+            source_entity_id,
+            config_entry.title,
+            sensor_type,
+            equal_updates,
+            config_entry.entry_id,
+        )
+    ])
 
     return True
 
@@ -155,18 +152,20 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     _state_had_real_change = False
     _attr_last_modified: str = dt_util.utcnow().isoformat()
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         hass: HomeAssistant,
         source_entity_id: str,
         name: str | None,
         sensor_type: str,
+        equal_updates: bool,
         unique_id: str | None,
     ) -> None:
         """Initialize the min/max sensor."""
         self._attr_unique_id = unique_id
         self._source_entity_id = source_entity_id
         self._sensor_type = sensor_type
+        self._equal_updates = equal_updates
 
         if name:
             self._attr_name = name
@@ -325,18 +324,23 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         """Calculate the values."""
         self._state_had_real_change = False
 
-        """Calculate min value, honoring unknown states."""
+        if self._state in [STATE_UNKNOWN, STATE_UNAVAILABLE]:
+            return
+
         if self._sensor_attr == ATTR_MIN_VALUE:
-            if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
-                self.min_value is None or self.min_value > self._state
+            if self.min_value is None or (
+                self.min_value >= self._state
+                if self._equal_updates
+                else self.min_value > self._state
             ):
                 self.min_value = self._state
                 self._state_had_real_change = True
 
-        """Calculate max value, honoring unknown states."""
         if self._sensor_attr == ATTR_MAX_VALUE:
-            if self._state not in [STATE_UNKNOWN, STATE_UNAVAILABLE] and (
-                self.max_value is None or self.max_value < self._state
+            if self.max_value is None or (
+                self.max_value <= self._state
+                if self._equal_updates
+                else self.max_value < self._state
             ):
                 self.max_value = self._state
                 self._state_had_real_change = True
