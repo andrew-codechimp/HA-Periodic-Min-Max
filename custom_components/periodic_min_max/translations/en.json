@@ -12,7 +12,7 @@
                 },
                 "data_description": {
                     "entity_id": "The entity that the sensor will track. The sensor will calculate the minimum or maximum value of this entity until reset via the `reset` action.",
-                    "equal_updates": "If enabled, the sensor will update the `last_modified` attribute even if the input entity value is the same as the current min/max.\nThe last_modified only updates when the value has changed and returned to the same min/max.",
+                    "equal_updates": "If enabled, the sensor will update the `last_modified` attribute even if the input entity value is the same as the current min/max.\nThe attribute is only updated when the value has changed and returned to the same min/max.",
                     "type": "Whether the sensor should track the minimum or maximum value of the input entity"
                 }
             }
@@ -28,7 +28,7 @@
                 },
                 "data_description": {
                     "entity_id": "The entity that the sensor will track. The sensor will calculate the minimum or maximum value of this entity until reset via the `reset` action.",
-                    "equal_updates": "If enabled, the sensor will update the `last_modified` attribute even if the input entity value is the same as the current min/max.\nThe last_modified only updates when the value has changed and returned to the same min/max.",
+                    "equal_updates": "If enabled, the sensor will update the `last_modified` attribute even if the input entity value is the same as the current min/max.\nThe attribute is only updated when the value has changed and returned to the same min/max.",
                     "type": "Whether the sensor should track the minimum or maximum value of the input entity"
                 }
             }
