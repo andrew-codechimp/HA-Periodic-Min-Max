@@ -22,28 +22,32 @@ from .const import CONF_EQUAL_UPDATES, DOMAIN
 _STATISTIC_MEASURES = ["min", "max"]
 
 
-OPTIONS_SCHEMA = vol.Schema({
-    vol.Required(CONF_ENTITY_ID): selector.EntitySelector(
-        selector.EntitySelectorConfig(
-            domain=[SENSOR_DOMAIN, NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN],
-            multiple=False,
+OPTIONS_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_ENTITY_ID): selector.EntitySelector(
+            selector.EntitySelectorConfig(
+                domain=[SENSOR_DOMAIN, NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN],
+                multiple=False,
+            ),
         ),
-    ),
-    vol.Required(CONF_TYPE): selector.SelectSelector(
-        selector.SelectSelectorConfig(
-            options=_STATISTIC_MEASURES, translation_key=CONF_TYPE
+        vol.Required(CONF_TYPE): selector.SelectSelector(
+            selector.SelectSelectorConfig(
+                options=_STATISTIC_MEASURES, translation_key=CONF_TYPE
+            ),
         ),
-    ),
-    vol.Required(CONF_EQUAL_UPDATES, default=False): selector.BooleanSelector(),
-})
+        vol.Required(CONF_EQUAL_UPDATES, default=False): selector.BooleanSelector(),
+    }
+)
 
-CONFIG_SCHEMA = vol.Schema({
-    vol.Required("name"): selector.TextSelector(
-        selector.TextSelectorConfig(
-            type=selector.TextSelectorType.TEXT, autocomplete="off"
-        ),
-    )
-}).extend(OPTIONS_SCHEMA.schema)
+CONFIG_SCHEMA = vol.Schema(
+    {
+        vol.Required("name"): selector.TextSelector(
+            selector.TextSelectorConfig(
+                type=selector.TextSelectorType.TEXT, autocomplete="off"
+            ),
+        )
+    }
+).extend(OPTIONS_SCHEMA.schema)
 
 CONFIG_FLOW = {
     "user": SchemaFlowFormStep(CONFIG_SCHEMA),

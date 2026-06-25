@@ -129,16 +129,18 @@ async def async_setup_entry(
         config_entry.add_update_listener(config_entry_update_listener)
     )
 
-    async_add_entities([
-        PeriodicMinMaxSensor(
-            hass,
-            source_entity_id,
-            config_entry.title,
-            sensor_type,
-            equal_updates,
-            config_entry.entry_id,
-        )
-    ])
+    async_add_entities(
+        [
+            PeriodicMinMaxSensor(
+                hass,
+                source_entity_id,
+                config_entry.title,
+                sensor_type,
+                equal_updates,
+                config_entry.entry_id,
+            )
+        ]
+    )
 
     return True
 
