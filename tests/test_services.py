@@ -5,8 +5,8 @@ from custom_components.periodic_min_max.services import SERVICE_RESET
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from homeassistant.core import HomeAssistant
-from homeassistant.setup import async_setup_component
 from homeassistant.helpers import entity_registry as er
+from homeassistant.setup import async_setup_component
 
 from .test_sensor import LAST_VALUE
 

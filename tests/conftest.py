@@ -2,21 +2,21 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from typing import Any
 from unittest.mock import AsyncMock, patch
-from collections.abc import Generator
 
 import pytest
 from custom_components.periodic_min_max.const import DOMAIN
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import (
+    CONF_ENTITY_ID,
     CONF_NAME,
     CONF_TYPE,
-    CONF_ENTITY_ID,
 )
-from homeassistant.config_entries import SOURCE_USER
+from homeassistant.core import HomeAssistant
 
 from .test_sensor import VALUES_NUMERIC
 

@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from unittest.mock import AsyncMock
 
-from custom_components.periodic_min_max.const import DOMAIN
+from custom_components.periodic_min_max.const import CONF_EQUAL_UPDATES, DOMAIN
 
 from homeassistant import config_entries
+from homeassistant.const import CONF_ENTITY_ID, CONF_NAME, CONF_TYPE
 from homeassistant.core import HomeAssistant
-from homeassistant.const import CONF_NAME, CONF_TYPE, CONF_ENTITY_ID
 from homeassistant.data_entry_flow import FlowResultType
 
 from .const import DEFAULT_NAME
@@ -39,6 +39,7 @@ async def test_form_sensor(hass: HomeAssistant, mock_setup_entry: AsyncMock) -> 
         CONF_NAME: DEFAULT_NAME,
         CONF_ENTITY_ID: "sensor.test_periodic_min_max",
         CONF_TYPE: "max",
+        CONF_EQUAL_UPDATES: False,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1

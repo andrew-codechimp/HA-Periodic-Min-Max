@@ -105,7 +105,7 @@ ignore = [
 max-complexity = 25
 
 [tool.ruff.lint.isort]
-length-sort = true
+length-sort = false
 section-order = [
   "future",
   "standard-library",

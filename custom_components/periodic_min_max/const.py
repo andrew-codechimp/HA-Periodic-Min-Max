@@ -13,4 +13,6 @@ CONFIG_VERSION = 1
 
 PLATFORMS = [Platform.SENSOR]
 
+CONF_EQUAL_UPDATES = "equal_updates"
+
 ATTR_LAST_MODIFIED = "last_modified"
