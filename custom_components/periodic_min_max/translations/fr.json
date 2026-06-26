@@ -7,8 +7,8 @@
                 "data": {
                     "entity_id": "Input entity",
                     "equal_updates": "Update on equal values",
-                    "name": "Name",
-                    "type": "Statistic characteristic"
+                    "name": "Nom",
+                    "type": "Indicateur statistique"
                 },
                 "data_description": {
                     "entity_id": "The entity that the sensor will track. The sensor will calculate the minimum or maximum value of this entity until reset via the `reset` action.",
@@ -24,7 +24,7 @@
                 "data": {
                     "entity_id": "Input entity",
                     "equal_updates": "Update on equal values",
-                    "type": "Statistic characteristic"
+                    "type": "Indicateur statistique"
                 },
                 "data_description": {
                     "entity_id": "The entity that the sensor will track. The sensor will calculate the minimum or maximum value of this entity until reset via the `reset` action.",
@@ -44,11 +44,11 @@
     },
     "services": {
         "reset": {
-            "name": "Reset",
+            "name": "Réinitialiser",
             "description": "Reset a Periodic Min/Max sensor to the current input entity value.",
             "fields": {
                 "entity_id": {
-                    "name": "Entity",
+                    "name": "Entité",
                     "description": "Select the Periodic Min/Max sensor."
                 }
             }
