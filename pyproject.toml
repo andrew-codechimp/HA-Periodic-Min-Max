@@ -91,6 +91,7 @@ ignore = [
   "TRY003",  # Avoid specifying long messages outside the exception class
   "TRY400",  # Use `logging.exception` instead of `logging.error`
   "PLR2004", # Magic value used in comparison
+  "CPY001",  # Missing copyright notice at top of file
 
   # Todo
   "ANN001",  # Missing type annotation for function argument
@@ -98,6 +99,7 @@ ignore = [
   "ARG001",  # Unused function argument
   "PTH123",
   "SIM102",  # Use a single if statement instead of nested if statements
+  "PLR0917", # Too many positional arguments (8 > 5)
 ]
 
 
