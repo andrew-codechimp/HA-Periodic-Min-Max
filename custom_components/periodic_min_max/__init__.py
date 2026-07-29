@@ -93,16 +93,29 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # periodic_min_max will not work without the source entity.
         await hass.config_entries.async_remove(entry.entry_id)
 
-    entry.async_on_unload(
-        async_handle_source_entity_changes(
-            hass,
-            helper_config_entry_id=entry.entry_id,
-            set_source_entity_id_or_uuid=set_source_entity_id_or_uuid,
-            source_device_id=async_get_source_entity_device_id(hass, entity_id),
-            source_entity_id_or_uuid=entry.options[CONF_ENTITY_ID],
-            source_entity_removed=source_entity_removed,
+    if AwesomeVersion(HA_VERSION) < AwesomeVersion("2026.8.0.dev0"):
+        entry.async_on_unload(
+            async_handle_source_entity_changes(
+                hass,
+                add_helper_config_entry_to_device=False,
+                helper_config_entry_id=entry.entry_id,
+                set_source_entity_id_or_uuid=set_source_entity_id_or_uuid,
+                source_device_id=async_get_source_entity_device_id(hass, entity_id),
+                source_entity_id_or_uuid=entry.options[CONF_ENTITY_ID],
+                source_entity_removed=source_entity_removed,
+            )
         )
-    )
+    else:
+        entry.async_on_unload(
+            async_handle_source_entity_changes(
+                hass,
+                helper_config_entry_id=entry.entry_id,
+                set_source_entity_id_or_uuid=set_source_entity_id_or_uuid,
+                source_device_id=async_get_source_entity_device_id(hass, entity_id),
+                source_entity_id_or_uuid=entry.options[CONF_ENTITY_ID],
+                source_entity_removed=source_entity_removed,
+            )
+        )
     entry.async_on_unload(entry.add_update_listener(config_entry_update_listener))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
