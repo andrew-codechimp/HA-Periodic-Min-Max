@@ -12,10 +12,10 @@ classifiers = [
   "Framework :: AsyncIO",
   "Intended Audience :: Developers",
   "Natural Language :: English",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3",
 ]
-requires-python = "==3.13.2"
+requires-python = "==3.14.2"
 dependencies = [] # Use dev for all dependencies
 
 [project.urls]
@@ -28,7 +28,7 @@ Changelog = "https://github.com/andrew-codechimp/HA-Periodic-Min-Max/releases"
 [dependency-groups]
 dev = [
     "colorlog",
-    "homeassistant==2025.10.0",
+    "homeassistant==2026.4.0",
     "mypy",
     "pygments",
     "pytest-homeassistant-custom-component",
@@ -157,3 +157,8 @@ exclude = [
     "^config/",
     "^scripts/",
 ]
+
+# Per-module options to ignore errors in external libraries
+[[tool.mypy.overrides]]
+module = "homeassistant.helpers.entity_registry"
+ignore_errors = true
