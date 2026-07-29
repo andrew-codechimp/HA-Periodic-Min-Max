@@ -130,7 +130,7 @@ voluptuous = "vol"
 # Specify the target platform details in config, so your developers are
 # free to run mypy on Windows, Linux, or macOS and get consistent
 # results.
-python_version = "3.13"
+python_version = "3.14"
 platform = "linux"
 
 # show error messages from unrelated files
