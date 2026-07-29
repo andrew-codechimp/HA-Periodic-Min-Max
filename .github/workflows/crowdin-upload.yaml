@@ -1,5 +1,4 @@
 name: Crowdin upload
-
 on:
   push:
     paths:
@@ -7,15 +6,12 @@ on:
     branches:
       - "main"
   workflow_dispatch:
-
 jobs:
   synchronize-with-crowdin:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-
       - name: crowdin action
         uses: crowdin/github-action@v2
         with:

@@ -2,8 +2,8 @@
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
-[![Downloads][download-latest-shield]]()
-[![HACS Installs][hacs-installs-shield]]()
+[![Downloads][download-latest-shield]](<>)
+[![HACS Installs][hacs-installs-shield]](<>)
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
 
@@ -18,7 +18,7 @@ A `last_modified` attribute is available to check when the min or max was really
 - Record the maximum temperature today, resetting at midnight via an automation.
 - Record the peak solar energy produced ever, reset when you upgrade your solar installation.
 
-_Please :star: this repo if you find it useful_  
+_Please :star: this repo if you find it useful_\
 _If you want to show your support please_
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/codechimp)
@@ -116,15 +116,14 @@ Create an [Issue](https://github.com/andrew-codechimp/HA-Periodic-Min-Max/issues
 
 </details>
 
----
+______________________________________________________________________
 
-[commits-shield]: https://img.shields.io/github/commit-activity/y/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
 [commits]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max/commits/main
-[hacs]: https://github.com/hacs/integration
-[hacsbadge]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
-[exampleimg]: example.png
-[license-shield]: https://img.shields.io/github/license/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
-[releases]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max/releases
+[commits-shield]: https://img.shields.io/github/commit-activity/y/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
 [download-latest-shield]: https://img.shields.io/github/downloads/andrew-codechimp/HA-Periodic-Min-Max/latest/total?style=for-the-badge
+[hacs]: https://github.com/hacs/integration
 [hacs-installs-shield]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Flauwbier.nl%2Fhacs%2Fperiodic_min_max&style=for-the-badge
+[hacsbadge]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
+[releases]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max/releases
+[releases-shield]: https://img.shields.io/github/release/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge

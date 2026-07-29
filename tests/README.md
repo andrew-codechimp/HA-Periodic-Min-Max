@@ -5,6 +5,7 @@ While tests aren't required to publish a custom component for Home Assistant, th
 # Getting Started
 
 To begin, it is recommended to create a virtual environment to install dependencies:
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
