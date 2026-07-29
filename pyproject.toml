@@ -158,7 +158,3 @@ exclude = [
     "^scripts/",
 ]
 
-# Per-module options to ignore errors in external libraries
-[[tool.mypy.overrides]]
-module = "homeassistant.helpers.entity_registry"
-ignore_errors = true
