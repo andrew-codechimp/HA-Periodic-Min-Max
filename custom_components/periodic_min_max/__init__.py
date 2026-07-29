@@ -15,10 +15,10 @@ from homeassistant.const import (
     __version__ as HA_VERSION,  # noqa: N812
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import config_validation as cv, entity_registry as er
-from homeassistant.helpers.helper_integration import (
-    async_handle_source_entity_changes,
-    async_remove_helper_config_entry_from_source_device,
+from homeassistant.helpers import (
+    config_validation as cv,
+    entity_registry as er,
+    helper_integration,
 )
 from homeassistant.helpers.typing import ConfigType
 
@@ -95,7 +95,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if AwesomeVersion(HA_VERSION) < AwesomeVersion("2026.8.0.dev0"):
         entry.async_on_unload(
-            async_handle_source_entity_changes(
+            helper_integration.async_handle_source_entity_changes(
                 hass,
                 add_helper_config_entry_to_device=False,
                 helper_config_entry_id=entry.entry_id,
@@ -107,7 +107,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     else:
         entry.async_on_unload(
-            async_handle_source_entity_changes(
+            helper_integration.async_handle_source_entity_changes(
                 hass,
                 helper_config_entry_id=entry.entry_id,
                 set_source_entity_id_or_uuid=set_source_entity_id_or_uuid,
@@ -149,11 +149,23 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
             if source_device_id := async_get_source_entity_device_id(
                 hass, options[CONF_ENTITY_ID]
             ):
-                async_remove_helper_config_entry_from_source_device(
-                    hass,
-                    helper_config_entry_id=config_entry.entry_id,
-                    source_device_id=source_device_id,
-                )
+                # HA 2026.8 changed the helper integration function, remove once we have 2026.8 min
+                remove_helper_devices = getattr(helper_integration, "async_remove_helper_devices", None)
+                remove_legacy_link = getattr(helper_integration, "async_remove_helper_config_entry_from_source_device", None)
+                if remove_helper_devices is not None:
+                    remove_helper_devices(
+                        hass,
+                        helper_config_entry_id=config_entry.entry_id,
+                        source_device_id=source_device_id,
+                        remove_all_devices=True,
+                    )
+                elif remove_legacy_link is not None:
+                    remove_legacy_link(
+                        hass,
+                        helper_config_entry_id=config_entry.entry_id,
+                        source_device_id=source_device_id,
+                    )
+
         hass.config_entries.async_update_entry(
             config_entry, options=options, minor_version=2
         )
