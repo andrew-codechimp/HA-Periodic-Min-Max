@@ -150,8 +150,14 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
                 hass, options[CONF_ENTITY_ID]
             ):
                 # HA 2026.8 changed the helper integration function, remove once we have 2026.8 min
-                remove_helper_devices = getattr(helper_integration, "async_remove_helper_devices", None)
-                remove_legacy_link = getattr(helper_integration, "async_remove_helper_config_entry_from_source_device", None)
+                remove_helper_devices = getattr(
+                    helper_integration, "async_remove_helper_devices", None
+                )
+                remove_legacy_link = getattr(
+                    helper_integration,
+                    "async_remove_helper_config_entry_from_source_device",
+                    None,
+                )
                 if remove_helper_devices is not None:
                     remove_helper_devices(
                         hass,
