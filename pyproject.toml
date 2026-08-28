@@ -92,6 +92,7 @@ ignore = [
   "TRY400",  # Use `logging.exception` instead of `logging.error`
   "PLR2004", # Magic value used in comparison
   "CPY001",  # Missing copyright notice at top of file
+  "FIX004",  # HACK, used for temporary HA version checks
 
   # Todo
   "ANN001",  # Missing type annotation for function argument
