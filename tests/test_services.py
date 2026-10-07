@@ -1,57 +1,48 @@
-"""Tests for the periodic_min_max services."""
+"""Tests for the Periodic Min/Max reset action."""
 
+import pytest
 from custom_components.periodic_min_max.const import DOMAIN
 from custom_components.periodic_min_max.services import SERVICE_RESET
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
-from homeassistant.setup import async_setup_component
 
-from .test_sensor import LAST_VALUE
+from . import setup_integration
+from .const import ENTITY_ID, SOURCE_ENTITY_ID
+
+pytestmark = pytest.mark.usefixtures("source_sensor")
 
 
-async def test_service_reset(
-    hass: HomeAssistant,
-    entity_registry: er.EntityRegistry,
+async def test_reset(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry, snapshot: SnapshotAssertion
 ) -> None:
-    """Test the post service."""
-
-    sensor_entity_entry = entity_registry.async_get_or_create(
-        "sensor", "test_1", "unique", suggested_object_id="test_1"
-    )
-    assert sensor_entity_entry.entity_id == "sensor.test_1"
-
-    hass.states.async_set("sensor.test_1", str(float(LAST_VALUE)))
-
-    periodic_min_max_entity_id = "sensor.my_periodic_min_max"
-
-    # Setup the config entry
-    config_entry = MockConfigEntry(
-        data={},
-        domain=DOMAIN,
-        options={
-            "name": "My periodic min max",
-            "entity_id": "sensor.test_1",
-            "type": "max",
-        },
-        title="My periodic_min_max",
-    )
-    config_entry.add_to_hass(hass)
-    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    """Test reset starts a new period at the current reading."""
+    await setup_integration(hass, mock_config_entry)
+    hass.states.async_set(SOURCE_ENTITY_ID, "20")
     await hass.async_block_till_done()
-
-    assert await async_setup_component(hass, DOMAIN, config_entry)
+    hass.states.async_set(SOURCE_ENTITY_ID, "12")
     await hass.async_block_till_done()
-
+    assert hass.states.get(ENTITY_ID).state == "20.0"
     await hass.services.async_call(
-        DOMAIN,
-        SERVICE_RESET,
-        target={"entity_id": periodic_min_max_entity_id},
-        blocking=True,
-        return_response=False,
+        DOMAIN, SERVICE_RESET, {"entity_id": ENTITY_ID}, blocking=True
     )
+    assert hass.states.get(ENTITY_ID) == snapshot
+    hass.states.async_set(SOURCE_ENTITY_ID, "15")
+    await hass.async_block_till_done()
+    assert hass.states.get(ENTITY_ID).state == "15.0"
 
-    state = hass.states.get(periodic_min_max_entity_id)
 
-    assert str(float(LAST_VALUE)) == state.state
+@pytest.mark.parametrize("source_state", ["unknown", "unavailable"])
+async def test_reset_with_invalid_source(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry, source_state: str
+) -> None:
+    """Test reset preserves the extremum when the current source cannot be used."""
+    await setup_integration(hass, mock_config_entry)
+    hass.states.async_set(SOURCE_ENTITY_ID, source_state)
+    await hass.async_block_till_done()
+    previous = hass.states.get(ENTITY_ID)
+    await hass.services.async_call(
+        DOMAIN, SERVICE_RESET, {"entity_id": ENTITY_ID}, blocking=True
+    )
+    assert hass.states.get(ENTITY_ID) == previous
