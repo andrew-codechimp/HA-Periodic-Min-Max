@@ -1,24 +1,40 @@
-# Why?
+# Periodic Min/Max tests
 
-While tests aren't required to publish a custom component for Home Assistant, they will generally make development easier because good tests will expose when changes you want to make to the component logic will break expected functionality. Home Assistant uses [`pytest`](https://docs.pytest.org/en/latest/) for its tests, and the tests that have been included are modeled after tests that are written for core Home Assistant integrations. These tests pass with 100% coverage (unless something has changed ;) ) and have comments to help you understand the purpose of different parts of the test.
+The suite uses `pytest-homeassistant-custom-component`, following the shared
+fixtures, parameterized tests, and Syrupy snapshots pattern.
 
-# Getting Started
+Run commands from the repository root:
 
-To begin, it is recommended to create a virtual environment to install dependencies:
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+./scripts/setup
+uv run --no-sync pytest
+uv run --no-sync pytest --cov=custom_components.periodic_min_max --cov-report=term-missing
+uv run --no-sync ruff check .
+uv run --no-sync ruff format --check .
+uv run --no-sync mypy
 ```
 
-You can then install the dependencies that will allow you to run tests:
-`pip3 install -r requirements_test.txt.`
+VS Code provides `Tests: All with Coverage` (the default test task), `Tests: All`,
+and `Tests: Current File`. The coverage task also writes an HTML report to
+`htmlcov/index.html`.
 
-This will install `homeassistant`, `pytest`, and `pytest-homeassistant-custom-component`, a plugin which allows you to leverage helpers that are available in Home Assistant for core integration tests.
+The GitHub `Tests` workflow runs on relevant pushes and pull requests to `main`,
+and can be started manually. It installs dependencies from `uv.lock` and runs
+the full suite.
 
-# Useful commands
+The tests cover:
 
-Command | Description
-------- | -----------
-`pytest tests/` | This will run all tests in `tests/` and tell you how many passed/failed
-`pytest --cov-report term-missing --cov=custom_components.periodic_min_max tests` | This tells `pytest` that your target module to test is `custom_components.periodic_min_max` so that it can give you a [code coverage](https://en.wikipedia.org/wiki/Code_coverage) summary, including % of code that was executed and the line numbers of missed executions.
-`pytest tests/test_init.py -k test_setup_unload_and_reload_entry` | Runs the `test_setup_unload_and_reload_entry` test function located in `tests/test_init.py`
+- Minimum and maximum values, equal-value timestamps, source metadata and units.
+- Restored extrema, reset actions, invalid source reports, and action translations.
+- Source registry changes, device relationships, migrations, and helper API compatibility.
+
+`mock_config_entry` accepts option overrides with indirect parametrization.
+`setup_integration` loads the helper. A frozen clock keeps entity timestamps
+stable.
+
+Entity metadata is captured in `snapshots/*.ambr`. After intentional output
+changes, regenerate and review the snapshots:
+
+```bash
+uv run --no-sync pytest tests --snapshot-update
+```

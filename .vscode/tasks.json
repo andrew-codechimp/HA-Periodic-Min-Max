@@ -2,6 +2,57 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Tests: All with Coverage",
+            "type": "shell",
+            "command": "uv run --no-sync pytest tests --cov=custom_components.periodic_min_max --cov-report=term-missing --cov-report=html",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Tests: Current File",
+            "type": "shell",
+            "command": "uv run --no-sync pytest \"${file}\" -v",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Tests: All",
+            "type": "shell",
+            "command": "uv run --no-sync pytest tests -v",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
             "label": "Run Home Assistant on port 8123",
             "type": "shell",
             "command": "scripts/develop",
@@ -29,20 +80,6 @@
             "group": {
                 "kind": "build",
                 "isDefault": false
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "Run Tests (pytest)",
-            "type": "shell",
-            "command": "uv run pytest",
-            "problemMatcher": [],
-            "group": {
-                "kind": "test",
-                "isDefault": true
             },
             "presentation": {
                 "reveal": "always",

@@ -38,7 +38,7 @@ dev = [
 [tool.uv]
 default-groups = ["dev"]
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 src = ["custom_components/periodic_min_max", "tests"]
 
 [tool.ruff.format]
@@ -103,6 +103,13 @@ ignore = [
   "PLR0917", # Too many positional arguments (8 > 5)
 ]
 
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "PLR0913", # Pytest injects fixtures and parametrized cases as arguments.
+    "PLR2004", # Test expectations use literal values.
+    "TC002", # Keep fixture annotation types available at runtime.
+]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 25

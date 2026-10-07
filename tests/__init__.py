@@ -1,5 +1,12 @@
-"""Tests for periodic_min_max integration."""
+"""Helpers for Periodic Min/Max tests."""
 
-import pytest
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-pytestmark = pytest.mark.asyncio
+from homeassistant.core import HomeAssistant
+
+
+async def setup_integration(hass: HomeAssistant, config_entry: MockConfigEntry) -> None:
+    """Load the helper from a config entry."""
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
