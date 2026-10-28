@@ -18,7 +18,8 @@ A `last_modified` attribute is available to check when the min or max was really
 - Record the maximum temperature today, resetting at midnight via an automation.
 - Record the peak solar energy produced ever, reset when you upgrade your solar installation.
 
-_Please :star: this repo if you find it useful_  
+_Please ⭐ this repo on [GitHub][repository] if you find it useful_
+
 _If you want to show your support please_
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/codechimp)
@@ -118,6 +119,7 @@ Create an [Issue](https://github.com/andrew-codechimp/HA-Periodic-Min-Max/issues
 
 ---
 
+[repository]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max
 [commits-shield]: https://img.shields.io/github/commit-activity/y/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
 [commits]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max/commits/main
 [hacs]: https://github.com/hacs/integration
