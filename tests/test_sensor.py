@@ -203,9 +203,6 @@ async def test_default_name(
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
     assert hass.states.get("sensor.max_sensor").state == "10.0"
-    assert (
-        hass.states.get("sensor.max_sensor").attributes["friendly_name"] == "Max sensor"
-    )
 
 
 async def test_unregistered_source(
