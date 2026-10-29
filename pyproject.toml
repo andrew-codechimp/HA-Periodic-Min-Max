@@ -94,7 +94,7 @@ ignore = [
   "CPY001",  # Missing copyright notice at top of file
   "FIX004",  # HACK, used for temporary HA version checks
 
-  # Todo
+  # TODO
   "ANN001",  # Missing type annotation for function argument
   "ANN201",  # Missing return type annotation for public function
   "ARG001",  # Unused function argument
