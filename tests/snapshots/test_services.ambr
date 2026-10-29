@@ -2,10 +2,10 @@
 # name: test_reset
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'friendly_name': 'My Periodic Min Max',
-      'icon': 'mdi:calculator',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'My Periodic Min Max',
+      <EntityStateAttribute.ICON: 'icon'>: 'mdi:calculator',
       'last_modified': '2026-07-01 12:00:00+00:00',
-      'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
     }),
     'context': <ANY>,
     'entity_id': 'sensor.my_periodic_min_max',
