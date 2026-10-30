@@ -1,10 +1,7 @@
 """Tests for periodic_min_max lifecycle and source registry changes."""
 
-from unittest.mock import ANY, Mock, patch
-
 import pytest
-from custom_components.periodic_min_max import async_migrate_entry, async_setup_entry
-from custom_components.periodic_min_max.const import PLATFORMS
+from custom_components.periodic_min_max import async_migrate_entry
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from homeassistant.config_entries import ConfigEntryState
@@ -13,7 +10,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import (
     device_registry as dr,
     entity_registry as er,
-    helper_integration,
 )
 
 from . import setup_integration
@@ -210,65 +206,13 @@ async def test_registry_notifications(
 
 
 @pytest.mark.usefixtures("source_sensor")
-@pytest.mark.parametrize(
-    ("ha_version", "extra_arguments"),
-    [
-        pytest.param(
-            "2026.4.0", {"add_helper_config_entry_to_device": False}, id="legacy-api"
-        ),
-        pytest.param("2026.8.0", {}, id="new-api"),
-    ],
-)
-async def test_helper_api_compatibility(
-    hass: HomeAssistant,
-    mock_config_entry: MockConfigEntry,
-    ha_version: str,
-    extra_arguments: dict[str, bool],
-) -> None:
-    """Test source tracking uses the helper API supported by the running HA version."""
-    mock_config_entry.add_to_hass(hass)
-    with (
-        patch("custom_components.periodic_min_max.HA_VERSION", ha_version),
-        patch(
-            "custom_components.periodic_min_max.helper_integration.async_handle_source_entity_changes",
-            return_value=Mock(),
-        ) as track_source,
-        patch.object(hass.config_entries, "async_forward_entry_setups") as forward,
-    ):
-        assert await async_setup_entry(hass, mock_config_entry)
-    track_source.assert_called_once_with(
-        hass,
-        helper_config_entry_id=mock_config_entry.entry_id,
-        set_source_entity_id_or_uuid=ANY,
-        source_device_id=None,
-        source_entity_id_or_uuid=SOURCE_ENTITY_ID,
-        source_entity_removed=ANY,
-        **extra_arguments,
-    )
-    forward.assert_awaited_once_with(mock_config_entry, PLATFORMS)
-
-
-@pytest.mark.usefixtures("source_sensor")
-@pytest.mark.parametrize(
-    ("cleanup_api", "extra_arguments"),
-    [
-        pytest.param(
-            "async_remove_helper_devices", {"remove_all_devices": True}, id="new-api"
-        ),
-        pytest.param(
-            "async_remove_helper_config_entry_from_source_device", {}, id="legacy-api"
-        ),
-    ],
-)
 async def test_migrate_device_link(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     entity_registry: er.EntityRegistry,
     device_registry: dr.DeviceRegistry,
-    cleanup_api: str,
-    extra_arguments: dict[str, bool],
 ) -> None:
-    """Test migration selects the available API to remove a legacy source device link."""
+    """Test migration removes the helper device and links its entity to the source."""
     source_entry = MockConfigEntry(domain="test")
     source_entry.add_to_hass(hass)
     device = device_registry.async_get_or_create(
@@ -277,24 +221,21 @@ async def test_migrate_device_link(
     entity_registry.async_update_entity(SOURCE_ENTITY_ID, device_id=device.id)
     mock_config_entry.add_to_hass(hass)
     hass.config_entries.async_update_entry(mock_config_entry, minor_version=1)
-    cleanup = Mock()
-    with (
-        patch.object(
-            helper_integration, "async_remove_helper_devices", None, create=True
-        ),
-        patch.object(
-            helper_integration,
-            "async_remove_helper_config_entry_from_source_device",
-            None,
-            create=True,
-        ),
-        patch.object(helper_integration, cleanup_api, cleanup),
-    ):
-        assert await async_migrate_entry(hass, mock_config_entry)
-    cleanup.assert_called_once_with(
-        hass,
-        helper_config_entry_id=mock_config_entry.entry_id,
-        source_device_id=device.id,
-        **extra_arguments,
+    helper_device = device_registry.async_get_or_create(
+        config_entry_id=mock_config_entry.entry_id,
+        identifiers={("periodic_min_max", "legacy")},
     )
+    helper_entity = entity_registry.async_get_or_create(
+        "sensor",
+        "periodic_min_max",
+        mock_config_entry.entry_id,
+        config_entry=mock_config_entry,
+        device_id=helper_device.id,
+    )
+
+    assert await async_migrate_entry(hass, mock_config_entry)
+
+    assert device_registry.async_get(helper_device.id) is None
+    assert device_registry.async_get(device.id) is not None
+    assert entity_registry.async_get(helper_entity.entity_id).device_id == device.id
     assert mock_config_entry.minor_version == 2
