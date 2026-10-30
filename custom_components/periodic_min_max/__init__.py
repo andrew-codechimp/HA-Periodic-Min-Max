@@ -93,29 +93,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # periodic_min_max will not work without the source entity.
         await hass.config_entries.async_remove(entry.entry_id)
 
-    if AwesomeVersion(HA_VERSION) < AwesomeVersion("2026.8.0.dev0"):
-        entry.async_on_unload(
-            helper_integration.async_handle_source_entity_changes(
-                hass,
-                add_helper_config_entry_to_device=False,
-                helper_config_entry_id=entry.entry_id,
-                set_source_entity_id_or_uuid=set_source_entity_id_or_uuid,
-                source_device_id=async_get_source_entity_device_id(hass, entity_id),
-                source_entity_id_or_uuid=entry.options[CONF_ENTITY_ID],
-                source_entity_removed=source_entity_removed,
-            )
+    entry.async_on_unload(
+        helper_integration.async_handle_source_entity_changes(
+            hass,
+            helper_config_entry_id=entry.entry_id,
+            set_source_entity_id_or_uuid=set_source_entity_id_or_uuid,
+            source_device_id=async_get_source_entity_device_id(hass, entity_id),
+            source_entity_id_or_uuid=entry.options[CONF_ENTITY_ID],
+            source_entity_removed=source_entity_removed,
         )
-    else:
-        entry.async_on_unload(
-            helper_integration.async_handle_source_entity_changes(
-                hass,
-                helper_config_entry_id=entry.entry_id,
-                set_source_entity_id_or_uuid=set_source_entity_id_or_uuid,
-                source_device_id=async_get_source_entity_device_id(hass, entity_id),
-                source_entity_id_or_uuid=entry.options[CONF_ENTITY_ID],
-                source_entity_removed=source_entity_removed,
-            )
-        )
+    )
     entry.async_on_unload(entry.add_update_listener(config_entry_update_listener))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -149,28 +136,12 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
             if source_device_id := async_get_source_entity_device_id(
                 hass, options[CONF_ENTITY_ID]
             ):
-                # HACK: HA 2026.8 changed the helper integration function, remove once we have 2026.8 min
-                remove_helper_devices = getattr(
-                    helper_integration, "async_remove_helper_devices", None
+                helper_integration.async_remove_helper_devices(
+                    hass,
+                    helper_config_entry_id=config_entry.entry_id,
+                    source_device_id=source_device_id,
+                    remove_all_devices=True,
                 )
-                remove_legacy_link = getattr(
-                    helper_integration,
-                    "async_remove_helper_config_entry_from_source_device",
-                    None,
-                )
-                if remove_helper_devices is not None:
-                    remove_helper_devices(
-                        hass,
-                        helper_config_entry_id=config_entry.entry_id,
-                        source_device_id=source_device_id,
-                        remove_all_devices=True,
-                    )
-                elif remove_legacy_link is not None:
-                    remove_legacy_link(
-                        hass,
-                        helper_config_entry_id=config_entry.entry_id,
-                        source_device_id=source_device_id,
-                    )
 
         hass.config_entries.async_update_entry(
             config_entry, options=options, minor_version=2
