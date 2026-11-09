@@ -1,12 +1,14 @@
+<!-- ha-marketplace:exclude-start -->
 # Periodic Min/Max
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![Downloads][download-latest-shield]]()
-[![HACS Installs][hacs-installs-shield]]()
+[![Installs][marketplace-installs-shield]][hacs-install]
+[![marketplace][marketplacebadge]][marketplace]
 [![License][license-shield]](LICENSE)
-[![hacs][hacsbadge]][hacs]
 
+<!-- ha-marketplace:exclude-end -->
 Periodic Min/Max Helpers for Home Assistant
 
 The helpers record the minimum or maximum of a sensor until manually reset via the reset action. The value is maintained through HA restarts.
@@ -53,15 +55,17 @@ To tell whether a new min or max has been achieved in the last 24 hours use this
 {{ (utcnow() - as_datetime(state_attr("sensor.my_sensor", "last_modified"))).total_seconds() < 86400 }}
 ```
 
+<!-- ha-marketplace:exclude-start -->
 ## Marketplace/HACS Installation
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=andrew-codechimp&repository=HA-Periodic-Min-Max&category=Integration)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=andrew-codechimp&repository=HA-Periodic-Min-Max&category=Integration)
 
 Or search for **Periodic Min/Max** if My Home Assistant does not work for you
 
 Restart Home Assistant if using HACS
 
 In the HA UI go to "Configuration" -> "Devices & services" -> "Helpers" click "+" and select "Periodic Min/Max"
+<!-- ha-marketplace:exclude-end -->
 
 ## Usage
 
@@ -107,11 +111,12 @@ Create an [Issue](https://github.com/andrew-codechimp/HA-Periodic-Min-Max/issues
 [repository]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max
 [commits-shield]: https://img.shields.io/github/commit-activity/y/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
 [commits]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max/commits/main
-[hacs]: https://github.com/hacs/integration
-[hacsbadge]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
-[exampleimg]: example.png
 [license-shield]: https://img.shields.io/github/license/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/andrew-codechimp/HA-Periodic-Min-Max.svg?style=for-the-badge
 [releases]: https://github.com/andrew-codechimp/HA-Periodic-Min-Max/releases
 [download-latest-shield]: https://img.shields.io/github/downloads/andrew-codechimp/HA-Periodic-Min-Max/latest/total?style=for-the-badge
-[hacs-installs-shield]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Flauwbier.nl%2Fhacs%2Fperiodic_min_max&style=for-the-badge
+[marketplace-installs-shield]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fanalytics.home-assistant.io%2Fcustom_integrations.json&query=%24.battery_notes.total&style=for-the-badge&label=Marketplace%20installs
+[marketplace-install]: https://my.home-assistant.io/redirect/marketplace_repository/?owner=andrew-codechimp&repository=battery_notes&category=integration
+[hacs-install]: https://my.home-assistant.io/redirect/hacs_repository/?owner=andrew-codechimp&repository=HA-Battery-Notes&category=Integration
+[marketplace]: https://home-assistant.io/integrations/marketplace
+[marketplacebadge]: https://img.shields.io/badge/Marketplace-Default-41BDF5.svg?style=for-the-badge
