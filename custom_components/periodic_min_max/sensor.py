@@ -317,7 +317,7 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
         self._calc_values()
 
         if self._state_had_real_change:
-            self._attr_last_modified = dt_util.utcnow().isoformat(sep=" ")
+            self._attr_last_modified = dt_util.utcnow().isoformat()
 
         self.async_write_ha_state()
 
