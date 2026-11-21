@@ -58,7 +58,7 @@ To tell whether a new min or max has been achieved in the last 24 hours use this
 <!-- ha-marketplace:exclude-start -->
 ## Marketplace/HACS Installation
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=andrew-codechimp&repository=HA-Periodic-Min-Max&category=Integration)
+[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=andrew-codechimp&repository=HA-Periodic-Min-Max&category=Integration)
 
 Or search for **Periodic Min/Max** if My Home Assistant does not work for you
 
