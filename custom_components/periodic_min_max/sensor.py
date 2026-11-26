@@ -153,7 +153,6 @@ class PeriodicMinMaxSensor(SensorEntity, RestoreEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _state_had_real_change = False
     _attr_last_modified: str = dt_util.utcnow().isoformat()
-    _unrecorded_attributes = frozenset({ATTR_LAST_MODIFIED})
 
     def __init__(  # noqa: PLR0913
         self,
